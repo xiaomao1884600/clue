@@ -34,8 +34,9 @@ class UserLoginService extends BaseService
     public function doLogin(array $params)
     {
         $userInfo = [];
-        $loginName = _isset($params, 'loginname', '');
+        $loginName = _isset($params, 'loginName', '');
         $passWord = _isset($params, 'password', '');
+        
         if(! $loginName || ! $passWord){
             throw new \Exception('Account or password can not be empty !');
         }
@@ -228,5 +229,35 @@ class UserLoginService extends BaseService
         ];
         $result = $this->userTokenRep->setTokenInvalidByToken($changeUserToken);
         return $result;
+    }
+
+    /**
+     * 密码找回
+     * @param array $params
+     * @throws \Exception
+     */
+    public function recoverPwd(array $params)
+    {
+        $userInfo = [];
+        $loginName = _isset($params, 'loginName', '');
+        $passWord = _isset($params, 'newPassword', '');
+        if(! $loginName){
+            throw new \Exception('Account or password can not be empty !');
+        }
+
+        // 检测用户信息
+        $userInfo = $this->userLoginRep->getUserByName(['loginName' => $loginName]);
+        if(! $userInfo){
+            throw new \Exception('The account or password does incorrect !');
+        }
+
+        $data['update']['salt'] = getSalt(3);
+
+        $data['update']['password'] = md5(md5($passWord) . $data['update']['salt']);
+        $data['userid'] = $userInfo['userid'];
+
+        $this->userLoginRep->updateUserInfo($data);
+
+        return ['ok'];
     }
 }

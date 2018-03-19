@@ -24,8 +24,12 @@ Route::group(['namespace' => 'UserLogin'], function(){
 
     Route::any('dologin', 'UserLoginController@doLogin');
     Route::any('logout', 'UserLoginController@logout');
+    Route::any('recover_pwd', 'UserLoginController@recoverPwd');
 });
 
+
+Route::get('formupload', 'Clue\UploadController@formUpload');
+Route::post('doupload', 'Clue\UploadController@doUpload');
 
 // token验证
 //Route::group(['middleware' => ['verify_token']], function(){
@@ -36,7 +40,23 @@ Route::group(['middleware' => []], function(){
     Route::group(['namespace' => 'Clue', 'prefix' => 'clue'], function(){
         // 导出word文档
         Route::any('export_word', 'WordController@clueExportWord');
+
+        // 线索录入
+        Route::any('save_clue', 'ClueController@saveClue');
+
+        // 检测线索编号
+        Route::any('check_clue_number', 'ClueController@checkClueNumber');
+
     });
+
+});
+
+/**
+ * 上传
+ */
+Route::group(['namespace' => 'Clue', 'prefix' => 'clue'], function(){
+    // 上传线索附件
+    Route::any('clue_upload', 'UploadController@doClueUpload');
 });
 
 

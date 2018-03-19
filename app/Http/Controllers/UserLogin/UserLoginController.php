@@ -45,4 +45,19 @@ class UserLoginController extends Controller
             return ApiExceptions::handle($e);
         }
     }
+
+    /**
+     * 密码找回
+     * @param Request $request
+     * @param UserLoginService $userLoginService
+     * @return array|mixed
+     */
+    public function recoverPwd(Request $request, UserLoginService $userLoginService)
+    {
+        try{
+            return Message::success($userLoginService->recoverPwd($request->all()));
+        }catch(\Exception $e){
+            return ApiExceptions::handle($e);
+        }
+    }
 }
