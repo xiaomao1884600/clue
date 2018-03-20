@@ -65,6 +65,22 @@ Route::group(['middleware' => []], function(){
 
     });
 
+
+    /**
+     * 登记发放管理（已结线索）
+     */
+    Route::group(['namespace' => 'Register', 'prefix' => 'clue'], function(){
+
+    });
+
+
+    /**
+     * 公文管理（文书）
+     */
+    Route::group(['namespace' => 'Document', 'prefix' => 'document'], function(){
+
+    });
+
 });
 
 
