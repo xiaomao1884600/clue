@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Clue;
 
 use App\Http\Controllers\Controller;
 use App\Service\Clue\ClueService;
+use App\Service\Clue\ClueUploadService;
 use App\Service\Exceptions\ApiExceptions;
 use App\Service\Exceptions\Message;
 use Illuminate\Http\Request;
@@ -20,6 +21,21 @@ class ClueController extends Controller
     public function __construct()
     {
 
+    }
+
+    /**
+     * 上传线索附件
+     * @param Request $request
+     * @param ClueService $clueService
+     * @return array|mixed
+     */
+    public function doClueUpload(Request $request, ClueUploadService $clueUploadService)
+    {
+        try {
+            return Message::success($clueUploadService->clueUpload($request, requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
     }
 
     /**

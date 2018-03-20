@@ -7,6 +7,7 @@
 <body>
 <form method="post" enctype="multipart/form-data" action="clue/clue_upload">
     <input type="file" name="file">
+    <input type="text" name="attachment_type">
     <button type="submit"> 提交 </button>
 </form>
 </body>

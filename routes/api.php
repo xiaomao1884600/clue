@@ -31,6 +31,16 @@ Route::group(['namespace' => 'UserLogin'], function(){
 Route::get('formupload', 'Clue\UploadController@formUpload');
 Route::post('doupload', 'Clue\UploadController@doUpload');
 
+
+/**
+ * 上传
+ */
+Route::group(['namespace' => 'Clue', 'prefix' => 'clue'], function(){
+    // 上传线索附件
+    Route::any('clue_upload', 'ClueController@doClueUpload');
+});
+
+
 // token验证
 //Route::group(['middleware' => ['verify_token']], function(){
 Route::group(['middleware' => []], function(){
@@ -55,14 +65,6 @@ Route::group(['middleware' => []], function(){
 
     });
 
-});
-
-/**
- * 上传
- */
-Route::group(['namespace' => 'Clue', 'prefix' => 'clue'], function(){
-    // 上传线索附件
-    Route::any('clue_upload', 'UploadController@doClueUpload');
 });
 
 

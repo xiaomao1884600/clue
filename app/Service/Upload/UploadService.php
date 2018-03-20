@@ -39,7 +39,7 @@ class UploadService extends BaseService
         $this->checkFileSize($file, $params);
 
         // 上传类型
-        $fileInfo['attachment_type'] = $params['uploadType'] ?? 0;
+        $fileInfo['attachment_type'] = $params['attachment_type'] ?? 0;
 
         // 获取原文件名称
         $fileInfo['name'] = $this->getFileName($fileInfo['originalName']);

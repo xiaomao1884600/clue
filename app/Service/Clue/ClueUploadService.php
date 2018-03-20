@@ -55,9 +55,14 @@ class ClueUploadService extends BaseService
             if(! $request->isMethod('post')){
                 throw new \Exception('request method must be post');
             }
+
+            if(! isset($params['attachment_type'])){
+                throw new \Exception('The attachment_type does not exists !');
+            }
+
             $file = $request->file('file');
             $params['disk'] = $this->disk;
-            $params['attachment_type'] = 'word';
+            $params['attachment_type'] = $params['attachment_type'] ?? 'word';
 
             // 上传文件
             $fileInfo = $this->uploadService->uploadFile($file, $params);
