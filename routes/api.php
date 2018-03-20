@@ -47,6 +47,12 @@ Route::group(['middleware' => []], function(){
         // 检测线索编号
         Route::any('check_clue_number', 'ClueController@checkClueNumber');
 
+        // 线索明细查看
+        Route::any('view_clue', 'ClueController@viewClue');
+
+        // 删除线索
+        Route::any('delete_clue', 'ClueController@deleteClue');
+
     });
 
 });

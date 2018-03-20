@@ -51,4 +51,34 @@ class ClueController extends Controller
             return ApiExceptions::handle($exception);
         }
     }
+
+    /**
+     * 查看线索明细
+     * @param Request $request
+     * @param ClueService $clueService
+     * @return array|mixed
+     */
+    public function viewClue(Request $request, ClueService $clueService)
+    {
+        try {
+            return Message::success($clueService->viewClue(requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
+    }
+
+    /**
+     * 删除线索
+     * @param Request $request
+     * @param ClueService $clueService
+     * @return array|mixed
+     */
+    public function deleteClue(Request $request, ClueService $clueService)
+    {
+        try {
+            return Message::success($clueService->deleteClue(requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
+    }
 }

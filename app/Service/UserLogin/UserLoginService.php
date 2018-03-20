@@ -241,8 +241,8 @@ class UserLoginService extends BaseService
         $userInfo = [];
         $loginName = _isset($params, 'loginName', '');
         $passWord = _isset($params, 'newPassword', '');
-        if(! $loginName){
-            throw new \Exception('Account or password can not be empty !');
+        if(! $loginName || ! $passWord){
+            throw new \Exception('Account or newPassword can not be empty !');
         }
 
         // 检测用户信息
@@ -258,6 +258,6 @@ class UserLoginService extends BaseService
 
         $this->userLoginRep->updateUserInfo($data);
 
-        return ['ok'];
+        return ['result' => true];
     }
 }

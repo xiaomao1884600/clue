@@ -55,7 +55,7 @@ class UserLoginController extends Controller
     public function recoverPwd(Request $request, UserLoginService $userLoginService)
     {
         try{
-            return Message::success($userLoginService->recoverPwd($request->all()));
+            return Message::success($userLoginService->recoverPwd(requestData($request)));
         }catch(\Exception $e){
             return ApiExceptions::handle($e);
         }
