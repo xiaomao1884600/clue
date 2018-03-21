@@ -97,4 +97,19 @@ class ClueController extends Controller
             return ApiExceptions::handle($exception);
         }
     }
+
+    /**
+     * 删除线索附件信息（内部使用）
+     * @param Request $request
+     * @param ClueService $clueService
+     * @return array|mixed
+     */
+    public function deleteClueAttachments(Request $request, ClueService $clueService)
+    {
+        try {
+            return Message::success($clueService->deleteClueAttachments(requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
+    }
 }

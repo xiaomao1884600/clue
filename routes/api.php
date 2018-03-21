@@ -63,6 +63,9 @@ Route::group(['middleware' => []], function(){
         // 删除线索
         Route::any('delete_clue', 'ClueController@deleteClue');
 
+        // 删除线索附件信息
+        Route::any('delete_clue_attachments', 'ClueController@deleteClueAttachments');
+
     });
 
 

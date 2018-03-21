@@ -11,6 +11,7 @@ namespace App\Service\Clue;
 
 use App\Repository\Clue\ClueRep;
 use App\Service\Foundation\BaseService;
+use Illuminate\Support\Facades\Storage;
 
 class ClueService extends BaseService
 {
@@ -262,6 +263,11 @@ class ClueService extends BaseService
         return ['result' => true];
     }
 
+    /**
+     * 删除线索附件信息(谨慎操作)
+     * @param array $params
+     * @return array
+     */
     public function deleteClueAttachments(array $params)
     {
         $clueId = $this->checkRequestClueId($params);
@@ -274,8 +280,25 @@ class ClueService extends BaseService
         $this->clueRep->deleteClueAttachments($condition);
 
         // TODO 删除附件
+        $this->deleteFile(['disk' => 'uploads', 'file' => array_column($clueAttachments, 'file_path', 'file_id')]);
 
         return ['result' => true];
+    }
+
+    protected function deleteFile(array $params)
+    {
+        $affected = 0;
+        $disk = _isset($params, 'disk');
+        $file = isset($params['file']) ? convertToArray($params['file']) : [];
+        if(! $file) return [];
+
+        foreach($file as $value){
+            // 截取储存空间
+            $filePath = ltrim(ltrim($value, $disk), '/');
+            $affected = Storage::disk($disk)->delete($filePath);
+        }
+
+        return $affected;
     }
 
     protected function checkRequestClueId(array $params)
