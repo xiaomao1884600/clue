@@ -73,7 +73,8 @@ Route::group(['middleware' => []], function(){
      * 登记发放管理（已结线索）
      */
     Route::group(['namespace' => 'Register', 'prefix' => 'clue'], function(){
-
+        // 列表
+        Route::any('closedlist', 'ClueClosedController@getClosedList');
     });
 
 

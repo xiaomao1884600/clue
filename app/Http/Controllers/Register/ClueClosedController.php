@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Service\Exceptions\ApiExceptions;
 use App\Service\Exceptions\Message;
 use Illuminate\Http\Request;
+use App\Service\Register\ClueClosedService;
 
 /**
  * 已结案件管理(登记发放)
@@ -22,5 +23,21 @@ class ClueClosedController extends Controller
     public function __construct()
     {
 
+    }
+
+    /**
+     * 获取已结线索列表
+     *
+     * @param Request $request
+     * @param ClueClosedService $clueService
+     * @return array|mixed
+     */
+    public function getClosedList(Request $request, ClueClosedService $clueService)
+    {
+        try {
+            return Message::success($clueService->getClosedListService(requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
     }
 }

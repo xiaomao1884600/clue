@@ -8,11 +8,60 @@
 namespace App\Repository\Register;
 
 use App\Repository\Foundation\BaseRep;
+use App\Model\Clue\Clue;
+use App\Model\Clue\ClueDetail;
+use DB;
 
 class ClueClosedRep extends BaseRep
 {
-    public function __construct()
+    public $condition;
+    public function __construct(
+        Clue $clue,
+        ClueDetail $clueDetail
+    )
     {
+        $this->clue = $clue;
+        $this->clueDetail = $clueDetail;
+    }
 
+    /**
+     * 获取已结线索列表
+     *
+     * @param array $params
+     * @return array
+     */
+    public function getClosedList(array $params){
+        $table = $this->clue->getTableName();
+        $table2 = $this->clueDetail->getTableName();
+        $orders = $params['order'];
+        $pagesize = isset($params['pagesize']) && $params['pagesize'] ?: 1;
+        $page = isset($params['page']) && $params['page'] ?: 2;
+        $query = $this->clue
+            ->select($table.'.number', $table.'.reflected_name', $table.'.company', $table.'.post',
+                $table.'.level', $table2.'.main_content', $table2.'.leader_approval', $table2.'.remark')
+            ->join($table2, $table2.'.clue_id', '=', $table.'.clue_id');
+        if(isset($params['source']) && $params['source']){
+            $query->where($table.'.source', '=', $params['source']);
+        }
+        if(isset($params['begin']) && $params['begin']){
+            $query->where($table.'.entry_time', '>=', $params['begin']);
+        }
+        if(isset($params['end']) && $params['end']){
+            $query->where($table.'.entry_time', '<=', $params['end']);
+        }
+        if(isset($orders['number']) && $params['number']){
+            $query->orderBy($table.'.number', 'DESC');
+        }else{
+            $query->orderBy($table.'.number', 'ASC');
+        }
+        if(isset($orders['reflected_name']) && $params['reflected_name']){
+            $query->orderBy($table.'.reflected_name', 'DESC');
+        }else{
+            $query->orderBy($table.'.reflected_name', 'ASC');
+        }
+        $query->take($pagesize);
+        $query->skip(($page - 1) * $pagesize);
+        $query = $query->get();
+        return $query && count($query) ? $query->toArray() : [];
     }
 }
