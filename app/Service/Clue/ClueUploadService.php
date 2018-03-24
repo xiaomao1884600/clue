@@ -56,13 +56,23 @@ class ClueUploadService extends BaseService
                 throw new \Exception('request method must be post');
             }
 
-            if(! isset($params['attachment_type'])){
-                throw new \Exception('The attachment_type does not exists !');
+            // 取消验证上传类型
+//            if(! isset($params['attachment_type'])){
+//                throw new \Exception('The attachment_type does not exists !');
+//            }
+
+            if(! $request->file('file')){
+                throw new \Exception('upload name is file !');
             }
 
-            $file = $request->file('file');
+
+            //file_put_contents(public_path('upload_test.json'), json_encode((array) current($request->file())));
+
+            //$file = $request->file('file');
+            $file = current($request->file());
+
             $params['disk'] = $this->disk;
-            $params['attachment_type'] = $params['attachment_type'] ?? 'word';
+            $params['attachment_type'] = $params['attachment_type'] ?? 'file';
 
             // 上传文件
             $fileInfo = $this->uploadService->uploadFile($file, $params);
