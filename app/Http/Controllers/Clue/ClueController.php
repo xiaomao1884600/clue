@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Clue;
 
 
 use App\Http\Controllers\Controller;
+use App\Service\Clue\ClueSearchService;
 use App\Service\Clue\ClueService;
 use App\Service\Clue\ClueUploadService;
 use App\Service\Exceptions\ApiExceptions;
@@ -108,6 +109,36 @@ class ClueController extends Controller
     {
         try {
             return Message::success($clueService->deleteClueAttachments(requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
+    }
+
+    /**
+     * 关键字搜索列表
+     * @param Request $request
+     * @param ClueSearchService $clueSearchService
+     * @return array|mixed
+     */
+    public function getClueKeyWordSearch(Request $request, ClueSearchService $clueSearchService)
+    {
+        try {
+            return Message::success($clueSearchService->clueKeyWordSearch(requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
+    }
+
+    /**
+     * 高级搜索
+     * @param Request $request
+     * @param ClueSearchService $clueSearchService
+     * @return array|mixed
+     */
+    public function getClueAdvancedSearch(Request $request, ClueSearchService $clueSearchService)
+    {
+        try {
+            return Message::success($clueSearchService->clueAdvancedSearch(requestData($request)));
         } catch (\Exception $exception) {
             return ApiExceptions::handle($exception);
         }

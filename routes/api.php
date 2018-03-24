@@ -13,6 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::any('test', function(){
+    return 'test';
+});
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -65,6 +69,12 @@ Route::group(['middleware' => []], function(){
 
         // 删除线索附件信息
         Route::any('delete_clue_attachments', 'ClueController@deleteClueAttachments');
+
+        // 线索管理关键字搜索
+        Route::any('clue_keyword_search', 'ClueController@getClueKeyWordSearch');
+
+        // 线索管理高级搜索
+        Route::any('clue_advanced_search', 'ClueController@getClueAdvancedSearch');
 
     });
 

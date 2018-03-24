@@ -251,6 +251,9 @@ class ClueService extends BaseService
 
         $condition = ['clue_id' => $clueId];
 
+        // 存储线索删除信息
+        $this->saveClueDeletedInfo($condition);
+
         // 删除线索
         $this->clueRep->deleteClue($condition);
 
@@ -261,6 +264,38 @@ class ClueService extends BaseService
         $this->clueRep->deleteClueAttachments($condition);
 
         return ['result' => true];
+    }
+
+    /**
+     * 保存线索删除信息
+     * @param array $params
+     * @return string
+     * @throws \Exception
+     */
+    protected function saveClueDeletedInfo(array $params)
+    {
+        $clueId = _isset($params, 'clue_id');
+        if(! $clueId){
+            throw new \Exception('clue_id does not exists !');
+        }
+
+        // 获取线索信息
+        $result['clue'] = $this->clueRep->getClueByClueId(['clue_id' => $clueId]);
+
+        // 获取线索详情
+        $result['clue_detail'] = $this->clueRep->getClueDetailByClueId(['clue_id' => $clueId]);
+
+        // 获取线索附件信息
+        $result['clue_attachments'] = $this->clueRep->getClueAttachmentsByClueId(['clue_id' => $clueId]);
+
+        $data = [
+            'clue_id' => $clueId,
+            'json_data' => json_encode($result),
+        ];
+
+        unset($result);
+
+        return $this->clueRep->saveClueDeleted([$data]);
     }
 
     /**

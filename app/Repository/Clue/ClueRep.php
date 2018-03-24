@@ -9,6 +9,7 @@ namespace App\Repository\Clue;
 
 use App\Model\Clue\Clue;
 use App\Model\Clue\ClueAttachments;
+use App\Model\Clue\ClueDeleted;
 use App\Model\Clue\ClueDetail;
 use App\Repository\Foundation\BaseRep;
 
@@ -20,16 +21,20 @@ class ClueRep extends BaseRep
 
     protected $clueAttachments;
 
+    protected $clueDeleted;
+
     public function __construct(
         Clue $clue,
         ClueDetail $clueDetail,
-        ClueAttachments $clueAttachments
+        ClueAttachments $clueAttachments,
+        ClueDeleted $clueDeleted
     )
     {
         parent::__construct();
         $this->clue = $clue;
         $this->clueDetail = $clueDetail;
         $this->clueAttachments = $clueAttachments;
+        $this->clueDeleted = $clueDeleted;
     }
 
     /*
@@ -151,7 +156,7 @@ class ClueRep extends BaseRep
     public function deleteClue(array $condition)
     {
         $clueId = _isset($condition, 'clue_id');
-        $clueId = converToArray($clueId);
+        $clueId = convertToArray($clueId);
         if(! $clueId) return [];
 
         return $this->clue
@@ -167,7 +172,7 @@ class ClueRep extends BaseRep
     public function deleteClueDetail(array $condition)
     {
         $clueId = _isset($condition, 'clue_id');
-        $clueId = converToArray($clueId);
+        $clueId = convertToArray($clueId);
         if(! $clueId) return [];
 
         return $this->clueDetail
@@ -194,5 +199,15 @@ class ClueRep extends BaseRep
         }
 
         return $query->delete();
+    }
+
+    /**
+     * 保存线索删除信息
+     * @param array $data
+     * @return string
+     */
+    public function saveClueDeleted(array $data)
+    {
+        return $this->clueDeleted->insertUpdateBatch($data);
     }
 }
