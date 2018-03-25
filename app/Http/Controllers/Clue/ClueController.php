@@ -143,4 +143,19 @@ class ClueController extends Controller
             return ApiExceptions::handle($exception);
         }
     }
+
+    /**
+     * 检测被反映人是否存在线索、案件等信息
+     * @param Request $request
+     * @param ClueSearchService $clueSearchService
+     * @return array|mixed
+     */
+    public function getClueByReflectedName(Request $request, ClueSearchService $clueSearchService)
+    {
+        try {
+            return Message::success($clueSearchService->getClueByReflectedName(requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
+    }
 }

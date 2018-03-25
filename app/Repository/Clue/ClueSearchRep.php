@@ -11,6 +11,7 @@ namespace App\Repository\Clue;
 
 use App\Model\Clue\Clue;
 use App\Model\Clue\ClueDetail;
+use App\Model\Document\Document;
 use App\Repository\Foundation\BaseRep;
 
 class ClueSearchRep extends BaseRep
@@ -19,14 +20,18 @@ class ClueSearchRep extends BaseRep
 
     protected $clueDetail;
 
+    protected $document;
+
     public function __construct(
         Clue $clue,
-        ClueDetail $clueDetail
+        ClueDetail $clueDetail,
+        Document $document
     )
     {
         parent::__construct();
         $this->clue = $clue;
         $this->clueDetail = $clueDetail;
+        $this->document = $document;
     }
 
     /**
@@ -70,16 +75,35 @@ class ClueSearchRep extends BaseRep
         }
 
         // 排序
-        if(isset($condition['orders']) && $condition['orders']){
-            foreach($condition['orders'] as $orders){
-                list($k, $v) = $orders;
-                $query->orderBy($k, $v);
+        if(isset($condition['orderBy']) && $condition['orderBy']){
+            foreach($condition['orderBy'] as $orderBy){
+                $query->orderBy($orderBy['field'], $orderBy['order']);
             }
         }
 
         $condition['size'] = _isset($condition, 'size', PAGESIZE);
 
         $result = $query->paginate($condition['size'])->toArray();
+
+        return $result;
+    }
+
+    /**
+     * 获取被反映人公文
+     * @param array $condition
+     * @return array
+     */
+    public function getDocumentByReflectedName(array $condition)
+    {
+        $reflectedName = _isset($condition, 'reflected_name');
+        $size = _isset($condition, 'size', PAGESIZE);
+        if(! $reflectedName) return [];
+
+        $result = $this->document
+                ->where('username', $reflectedName)
+                ->orderBy('document_date', 'DESC')
+                ->paginate($size)
+                ->toArray();
 
         return $result;
     }
