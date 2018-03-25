@@ -76,6 +76,9 @@ Route::group(['middleware' => []], function(){
         // 线索管理高级搜索
         Route::any('clue_advanced_search', 'ClueController@getClueAdvancedSearch');
 
+        // 检测被反映人线索、公文等信息
+        Route::any('get_reflected_name_clue', 'ClueController@getClueByReflectedName');
+
     });
 
 
