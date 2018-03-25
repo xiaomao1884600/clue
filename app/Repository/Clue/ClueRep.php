@@ -210,4 +210,27 @@ class ClueRep extends BaseRep
     {
         return $this->clueDeleted->insertUpdateBatch($data);
     }
+    
+    /**
+     * 超期提醒列表
+     * 
+     * @param array $data
+     * @return type
+     */
+    public function getOverdueRemind(array $data)
+    {
+        $table = $this->clue->getTableName();
+        $pagesize = isset($data['pagesize']) && $data['pagesize'] ?: 1;
+        $page = isset($data['page']) && $data['page'] ?: 2;
+        $query = $this->clue
+            ->select($table.'.clue_id', $table.'.source', $table.'.number', $table.'.reflected_name',
+                $table.'.closed_time', $table.'.remind_days', $table.'.remind_days');
+        $query->orderBy($table.'.remind_days');
+        $query->orderBy($table.'.closed_time');
+        $total = $query->count();
+        $query->take($pagesize);
+        $query->skip(($page - 1) * $pagesize);
+        $query = $query->get();
+        return $query && count($query) ? ['data' => $query->toArray(), 'total' => $total] : ['data' => [], 'total' => 0];
+    }
 }

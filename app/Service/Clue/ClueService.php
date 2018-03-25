@@ -344,4 +344,19 @@ class ClueService extends BaseService
         }
         return $clueId;
     }
+    
+    /**
+     * 超期提醒
+     * 
+     * @param array $params
+     * @return type
+     */
+    public function overdueRemind(array $params)
+    {
+        $params = [
+            'page' => 1,
+            'pagesize' => 20
+        ];
+        return $this->clueRep->getOverdueRemind($params);
+    }
 }

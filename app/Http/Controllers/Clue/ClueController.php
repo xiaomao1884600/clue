@@ -158,4 +158,20 @@ class ClueController extends Controller
             return ApiExceptions::handle($exception);
         }
     }
+    
+    /**
+     * 超期提醒
+     * 
+     * @param Request $request
+     * @param ClueService $clueService
+     * @return type
+     */
+    public function overdueRemind(Request $request, ClueService $clueService)
+    {
+        try {
+            return Message::success($clueService->overdueRemind(requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
+    }
 }

@@ -78,6 +78,9 @@ Route::group(['middleware' => []], function(){
 
         // 检测被反映人线索、公文等信息
         Route::any('get_reflected_name_clue', 'ClueController@getClueByReflectedName');
+        
+        // 线索超期提醒
+        Route::any('overdue', 'ClueController@overdueRemind');
 
     });
 
