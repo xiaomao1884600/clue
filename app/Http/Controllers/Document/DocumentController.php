@@ -41,6 +41,13 @@ class DocumentController extends Controller
         }
     }
     
+    /**
+     * 公文列表
+     * 
+     * @param Request $request
+     * @param DocumentService $documentService
+     * @return type
+     */
     public function documentList(Request $request, DocumentService $documentService)
     {
         try {
