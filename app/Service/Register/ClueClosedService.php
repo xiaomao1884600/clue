@@ -19,6 +19,17 @@ use Excel;
 
 class ClueClosedService extends BaseService
 {
+    protected $closedheader = [
+        [
+            'number' => '编号',
+            'reflected_name' => '被反映人',
+            'company' => '单位',
+            'main_content' => '主要问题',
+            'leader_approval' => '领导批示',
+            'remark' => '备注'
+        ]
+    ];
+    
     public function __construct(ClueClosedRep $clueClosedRep)
     {
         parent::__construct();
@@ -47,17 +58,20 @@ class ClueClosedService extends BaseService
                     'order' => 1
                 ]
             ],
-            'export' => 0//是否导出，默认0，即为列表查询，1触发导出
+            'export' => 1,//是否导出，默认0，即为列表查询，1触发导出
+            'print' => 0//打印参数，默认0正常查询，1打印列表数据
         ];
         //检查查询日期是否正确
         $this->checkSearchDate($params);
         //拼装最终搜索条件
         $condition = $this->processSearchCondition($params);
+        $isAll = false;
+        if(isset($params['export']) && $params['export']) $isAll = true;
         //执行查询
-        $res = $this->closedRep->getClosedList($condition);
+        $res = $this->closedRep->getClosedList($condition, $isAll);
         //导出功能
-        if(isset($params['export']) && $params['export']){
-
+        if($isAll && !empty($res['data'])){
+            $this->closedClueExport($res['data']);
         }
         return $res;
     }
@@ -97,9 +111,15 @@ class ClueClosedService extends BaseService
         return $condition;
     }
 
+    /**
+     * 已结案线索导出
+     * 
+     * @param array $cellData
+     */
     public function closedClueExport(array $cellData)
     {
-        Excel::create('学生成绩',function($excel) use ($cellData){
+        $cellData = array_merge_recursive($this->closedheader, $cellData);
+        Excel::create('已结案线索',function($excel) use ($cellData){
             $excel->sheet('score', function($sheet) use ($cellData){
                 $sheet->rows($cellData);
             });

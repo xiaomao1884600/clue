@@ -92,7 +92,10 @@ Route::group(['middleware' => []], function(){
      * 公文管理（文书）
      */
     Route::group(['namespace' => 'Document', 'prefix' => 'document'], function(){
-
+        // 公文添加
+        Route::any('save', 'DocumentController@save');
+        //公文列表
+        Route::any('list', 'DocumentController@documentList');
     });
 
 });

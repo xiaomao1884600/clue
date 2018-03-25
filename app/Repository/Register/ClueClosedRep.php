@@ -30,7 +30,7 @@ class ClueClosedRep extends BaseRep
      * @param array $params
      * @return array
      */
-    public function getClosedList(array $params){
+    public function getClosedList(array $params, $isAll = false){
         $table = $this->clue->getTableName();
         $table2 = $this->clueDetail->getTableName();
         $orders = $params['order'];
@@ -59,9 +59,12 @@ class ClueClosedRep extends BaseRep
         }else{
             $query->orderBy($table.'.reflected_name', 'ASC');
         }
-        $query->take($pagesize);
-        $query->skip(($page - 1) * $pagesize);
+        $total = $query->count();
+        if(!$isAll){
+            $query->take($pagesize);
+            $query->skip(($page - 1) * $pagesize);
+        }
         $query = $query->get();
-        return $query && count($query) ? $query->toArray() : [];
+        return $query && count($query) ? ['data' => $query->toArray(), 'total' => $total] : ['data' => [], 'total' => 0];
     }
 }
