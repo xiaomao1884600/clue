@@ -136,14 +136,19 @@ class ClueRep extends BaseRep
         $clueId = $condition['clue_id'] ?? '';
         if(! $clueId) return $result;
 
-        $result = $this->clueAttachments
+        $query = $this->clueAttachments
                 ->select(
                     'id', 'clue_id', 'attachment_type', 'filename', 'file_path',
                     'file_extension', 'file_id'
                 )
-                ->where('clue_id', $clueId)
-                ->get()
-                ->toArray();
+                ->where('clue_id', $clueId);
+
+        // 获取指定文件信息
+        if(isset($condition['file_id']) && $condition['file_id']){
+            $query->whereIn('file_id', convertToArray($condition['file_id']));
+        }
+
+        $result = $query->get()->toArray();
 
         return $result;
     }
@@ -188,14 +193,14 @@ class ClueRep extends BaseRep
     public function deleteClueAttachments(array $condition)
     {
         $clueId = _isset($condition, 'clue_id');
-        $ids = convertToArray(_isset($condition, 'id', 0));
+        $fileId = convertToArray(_isset($condition, 'file_id', 0));
         if(! $clueId) return [];
 
         $query = $this->clueAttachments
                 ->where('clue_id', $clueId);
 
-        if($ids){
-            $query->whereIn('id', $ids);
+        if($fileId){
+            $query->whereIn('file_id', $fileId);
         }
 
         return $query->delete();
@@ -210,6 +215,7 @@ class ClueRep extends BaseRep
     {
         return $this->clueDeleted->insertUpdateBatch($data);
     }
+
     
     /**
      * 超期提醒列表
@@ -223,14 +229,40 @@ class ClueRep extends BaseRep
         $pagesize = isset($data['pagesize']) && $data['pagesize'] ?: 1;
         $page = isset($data['page']) && $data['page'] ?: 2;
         $query = $this->clue
-            ->select($table.'.clue_id', $table.'.source', $table.'.number', $table.'.reflected_name',
-                $table.'.closed_time', $table.'.remind_days', $table.'.remind_days');
-        $query->orderBy($table.'.remind_days');
-        $query->orderBy($table.'.closed_time');
+            ->select($table . '.clue_id', $table . '.source', $table . '.number', $table . '.reflected_name',
+                $table . '.closed_time', $table . '.remind_days', $table . '.remind_days');
+        $query->orderBy($table . '.remind_days');
+        $query->orderBy($table . '.closed_time');
         $total = $query->count();
         $query->take($pagesize);
         $query->skip(($page - 1) * $pagesize);
         $query = $query->get();
         return $query && count($query) ? ['data' => $query->toArray(), 'total' => $total] : ['data' => [], 'total' => 0];
+    }
+
+    /**
+     * 获取线索信息
+     * @param array $condition
+     */
+    public function getClueInfoByClueId(array $condition)
+    {
+        $result = [];
+
+        $clueId = isset($condition['clue_id']) ? convertToArray($condition['clue_id']) : [];
+        if(! $clueId) return $result;
+        $table = $this->clue->getTableName();
+        $table2 = $this->clueDetail->getTableName();
+
+        $result = $this->clue
+                ->select(
+                    $table . '.*', $table2 . '.main_content', $table2 . '.department_opinion',
+                    $table2 . '.leader_approval', $table2 . '.remark'
+                )
+                ->leftJoin($table2, $table . '.clue_id', '=', $table2 . '.clue_id')
+                ->whereIn($table . '.clue_id', $clueId)
+                ->get()
+                ->toArray();
+
+        return $result;
     }
 }

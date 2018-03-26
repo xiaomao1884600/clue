@@ -93,35 +93,41 @@ class WordService extends BaseService
 //        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($objFile, 'HTML');
 //        $writer->save(public_path('./test2.html'));
 
+//        // 读取word文档
+//        $reader = \PhpOffice\PhpWord\IOFactory::createReader('Word2007');
+//        $objFile = $reader->load(public_path('./clue_new.docx'));
+//
+//        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($objFile, 'HTML');
+//
+//        $writer->save(public_path('./clue_new.html'));
+
+
         return [];
     }
 
     public function exportTemp(array $params)
     {
-        $data = $this->tempData;
+        $tempPath = _isset($params, 'tempPath');
+        $data = _isset($params, 'data', []);
+
+        if(! $tempPath || ! $data){
+            throw new \Exception('temp_path or data does not null');
+        }
+
+        $clueId = _isset($params, 'clue_id');
+        $newName = 'word' . DS . 'clue_' . $data['clue_id'] . '.docx';
+        $newPath = public_path($newName);
 
         // 载入模板
-        $document = $this->phpWord->loadTemplate(public_path('./clue_temp_bk.docx'));
+        $document = $this->phpWord->loadTemplate($tempPath);
 
         // 替换模板内容
-        $document->setValue('title', $data['title']);
-        $document->setValue('name', $data['name']);
-        $document->setValue('number', $data['number']);
-        $document->setValue('describe', $data['describe']);
-        $document->setValue('mobile', $data['mobile']);
-        $document->setValue('address', $data['address']);
+        foreach($data as $key => $value){
+            $document->setValue($key, $value);
+        }
 
         // 保存新的word文档
-
-        $result = $document->saveAs(public_path('./clue_new.docx'));
-
-        // 读取word文档
-        $reader = \PhpOffice\PhpWord\IOFactory::createReader('Word2007');
-        $objFile = $reader->load(public_path('./clue_new.docx'));
-
-        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($objFile, 'HTML');
-
-        $writer->save(public_path('./clue_new.html'));
+        $result = $document->saveAs($newPath);
 
         return [$result];
     }

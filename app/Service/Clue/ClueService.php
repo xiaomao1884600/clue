@@ -105,7 +105,7 @@ class ClueService extends BaseService
     public function saveClue(array $params)
     {
         // TODO 临时测试
-        $params = $this->testClueInfo;
+        //$params = $this->testClueInfo;
 
         if(! isset($params['clue']) || ! $params['clue']){
             throw new \Exception('Incomplete clue information !');
@@ -306,11 +306,14 @@ class ClueService extends BaseService
     public function deleteClueAttachments(array $params)
     {
         $clueId = $this->checkRequestClueId($params);
+        $fileId = _isset($params, 'file_id');
 
-        $condition = ['clue_id' => $clueId];
+        $condition = ['clue_id' => $clueId, 'file_id' => $fileId];
         // 获取线索附件信息
         $clueAttachments = $this->clueRep->getClueAttachmentsByClueId($condition);
-
+        if(! $clueAttachments){
+            throw new \Exception('clue_attachment does not exists');
+        }
         // 删除线索附件信息
         $this->clueRep->deleteClueAttachments($condition);
 
