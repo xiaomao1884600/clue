@@ -39,6 +39,9 @@ class ClueWordService extends BaseService
         $clueData = [];
         // 获取线索数据
         $clueData = $this->getClueData($params);
+        if(! $clueData){
+            throw new \Exception('clue info does not exists !');
+        }
 
         // 处理数据
         $clueData = $this->processClueData($clueData);
@@ -66,6 +69,8 @@ class ClueWordService extends BaseService
     protected function processClueData(array $data)
     {
         // TODO 处理
+        $data['entry_date'] = dateFormat(strtotime($data['entry_time']), 'Y 年 m 月 d 日');
+
         return $data;
     }
 

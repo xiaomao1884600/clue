@@ -129,6 +129,6 @@ class WordService extends BaseService
         // 保存新的word文档
         $result = $document->saveAs($newPath);
 
-        return [$result];
+        return ['file_path' => $newName];
     }
 }
