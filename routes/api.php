@@ -34,7 +34,7 @@ Route::group(['namespace' => 'UserLogin'], function(){
 
 Route::get('formupload', 'Clue\UploadController@formUpload');
 Route::post('doupload', 'Clue\UploadController@doUpload');
-
+Route::get('formexcel', 'Clue\UploadController@formExcel');
 
 /**
  * 上传
@@ -81,6 +81,9 @@ Route::group(['middleware' => []], function(){
         
         // 线索超期提醒
         Route::any('overdue', 'ClueController@overdueRemind');
+
+        // 导入线索excel
+        Route::any('import_clue_excel', 'UploadController@importClueExcel');
 
     });
 

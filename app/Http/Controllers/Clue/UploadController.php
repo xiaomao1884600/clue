@@ -40,4 +40,23 @@ class UploadController extends Controller
             return ApiExceptions::handle($exception);
         }
     }
+
+    public function formExcel()
+    {
+        return view('excel');
+    }
+
+    /**
+     * 导入线索excel
+     * @param Request $request
+     * @return array|mixed
+     */
+    public function importClueExcel(Request $request, ClueUploadService $clueUploadService)
+    {
+        try {
+            return Message::success($clueUploadService->importClueExcel($request, requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
+    }
 }

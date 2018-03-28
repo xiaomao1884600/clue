@@ -71,6 +71,13 @@ return [
             'root' => public_path('uploads'),
         ],
 
+        /**
+         * excel 新建本地存储空间，用于存储导入的excel
+         */
+        'excel' => [
+            'driver' => 'local',
+            'root' => public_path('excel'),
+        ],
     ],
 
 ];

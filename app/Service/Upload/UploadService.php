@@ -52,11 +52,11 @@ class UploadService extends BaseService
 
         $fileName = $fileInfo['path'] ? $fileInfo['path'] . DS . $fileInfo['newFileName'] : $fileInfo['newFileName'];
 
-        // TODO 可以使用move方式
+        // TODO 可以使用move方式, 中文名称上传有问题
         //$fileInfo['file_path'] = $file->move($fileInfo['fileurl'], iconv('UTF-8', 'GBK//IGNORE', $fileInfo['newFileName']));
 
         // 上传文件
-        $fileInfo['bool'] = Storage::disk($params['disk'])->put($fileName, $fileInfo['realPath']);
+        $fileInfo['bool'] = Storage::disk($params['disk'])->put($fileName, file_get_contents($fileInfo['realPath']));
 
         // 新文件路径
         $fileInfo['file_path'] = $params['disk'] . DS . $fileName;
