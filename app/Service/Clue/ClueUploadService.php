@@ -126,7 +126,7 @@ class ClueUploadService extends BaseService
 
             // TODO 导入excel数据
             $excelData = $this->getExcelData($params);
-
+            dd($excelData);
             // TODO 处理线索保存
             return $params['fileInfo'];
         }catch(\Exception $e){
@@ -189,6 +189,7 @@ class ClueUploadService extends BaseService
 
     protected function getExcelData(array $params)
     {
+        $titleRule = [];
         $filePath = $params['fileInfo']['file_path'] ?? '';
         $filePath = public_path($filePath);
         $params['file_path'] = $filePath;
@@ -199,8 +200,26 @@ class ClueUploadService extends BaseService
         // 获取excel数据
         $excelData = $this->excelService->getExcelData($params);
 
+        $excelData = (isset($excelData[0][0]) && is_array($excelData[0][0])) ? $excelData[0] : $excelData;
+
         // todo 处理空数据及多个sheet问题
+        $excelData = array_filter($excelData);
+
+        // 过滤标题规则
+        $clueExcelConfig = config('clue.clue_excel');
+        $titleRule['titleRule'] = _isset($clueExcelConfig, 'title_rule', []);
+        $titleRule['typeRule'] = _isset($clueExcelConfig, 'type_rule', []);
+        $titleRule['dicRule'] = _isset($clueExcelConfig, 'dic_rule', []);
+
+        $excelData = $this->excelService->convertExcelDataRule($excelData, $titleRule);
 
         return $excelData;
+    }
+
+    protected function setSaveClueData()
+    {
+        // todo 检测编号重复数据
+        $condition = [];
+
     }
 }

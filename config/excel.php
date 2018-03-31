@@ -425,10 +425,11 @@ return array(
         |
         | Convert headings to ASCII
         | Note: only applies to 'heading' settings 'true' && 'slugged'
-        |
+        | 默认为 true，改为 false,可以支持中文标题
         */
 
-        'to_ascii'                => true,
+        //'to_ascii'                => true,
+        'to_ascii'                => false,
 
         /*
         |--------------------------------------------------------------------------
