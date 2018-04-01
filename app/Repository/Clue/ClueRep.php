@@ -279,7 +279,7 @@ class ClueRep extends BaseRep
         $number = convertToArray($number);
         if(! $number) return $result;
 
-        $query = $this->clue
+        $result = $this->clue
             ->whereIn('number', $number)
             ->get()
             ->toArray();

@@ -13,5 +13,5 @@ use App\Model\Foundation\BaseModel;
 
 class ImportFailed extends BaseModel
 {
-    protected $table = 'import_failed';
+    protected $table = 't_import_failed';
 }

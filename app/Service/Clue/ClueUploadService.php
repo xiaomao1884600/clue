@@ -138,7 +138,7 @@ class ClueUploadService extends BaseService
             // TODO 处理线索保存
             $result = $this->setSaveClueData($excelData, $params);
 
-            return $params['fileInfo'];
+            return $result;
         }catch(\Exception $e){
             throw new \Exception($e->getMessage());
         }
@@ -219,16 +219,22 @@ class ClueUploadService extends BaseService
 
     protected function setSaveClueData(array $excelData, array $params = [])
     {
+        $result = [];
         $error = [];
+
         // todo 检测编号重复数据
         $error = $this->verifyClueNumber($excelData, $error);
 
         // 处理失败信息
-        $result = $this->setFailedData($excelData, $error, $params);
+        $failedData = $this->setFailedData($excelData, $error, $params);
 
         // 处理线索数据保存
         $this->clueService->saveExcelClue($excelData);
-        
+
+        $result = [
+            'successData' => ['total' => count($excelData)],
+            'failedData' => ['total' => count($failedData) ,'data' => $failedData],
+        ];
         return $result;
 
     }
@@ -265,7 +271,7 @@ class ClueUploadService extends BaseService
 
         $rt = [
             'file_id' => $params['fileInfo']['file_id'] ?? 0,
-            'file_info' => json_encode($params, 'fileInfo', []),
+            'file_info' => json_encode(_isset($params, 'fileInfo', [])),
             'failed_data' => json_encode($failedData),
         ];
 
