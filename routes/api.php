@@ -109,5 +109,7 @@ Route::group(['middleware' => []], function(){
 
 });
 
-
-
+Route::group(['namespace' => 'Foundation', 'prefix' => 'dic'], function(){
+    // 上传线索附件
+    Route::any('getdic', 'DicController@dicList');
+});
