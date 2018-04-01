@@ -362,4 +362,43 @@ class ClueService extends BaseService
         ];
         return $this->clueRep->getOverdueRemind($params);
     }
+
+    /**
+     * 通过编号获取线索信息
+     * @param array $params
+     * @return array
+     */
+    public function checkClueByNumber(array $params)
+    {
+        $number = _isset($params, 'number');
+
+        // 获取线索信息
+        return $this->clueRep->checkClueByNumber(['number' => $number]);
+    }
+
+    /**
+     * 保存导入的数据
+     * @param array $params
+     * @return array
+     */
+    public function saveExcelClue(array $excelData)
+    {
+        $rt = [];
+        if(! $excelData) return [];
+        foreach($excelData as $key => $value){
+            $value['op_type'] = 1;
+            // TODO 过滤字段
+            $rt['clue'] = $value;
+            $rt['clue_detail'] = $value;
+
+            // 处理线索存储
+            $clueId = $this->processSaveClue($rt['clue']);
+
+            // 处理线索详情存储
+            $this->processSaveClueDetail($rt['clue_detail'], $clueId);
+        }
+
+        return [];
+    }
+
 }

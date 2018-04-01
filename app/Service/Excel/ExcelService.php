@@ -41,6 +41,30 @@ class ExcelService extends BaseService
         return $excelData;
     }
 
+    /**
+     * 获取转换数据
+     * @param array $excelData
+     * @param array $params
+     * @return array|mixed
+     */
+    public function getConvertExcelData(array $excelData, array $params)
+    {
+        $ruleInfo = $params['ruleInfo'] ?? [];
+        $excelData = (isset($excelData[0][0]) && is_array($excelData[0][0])) ? $excelData[0] : $excelData;
+
+        // todo 处理空数据及多个sheet问题
+        $excelData = array_filter($excelData);
+
+        // 过滤标题规则
+        $titleRule['titleRule'] = _isset($ruleInfo, 'title_rule', []);
+        $titleRule['typeRule'] = _isset($ruleInfo, 'type_rule', []);
+        $titleRule['dicRule'] = _isset($ruleInfo, 'dic_rule', []);
+
+        $excelData = $this->convertExcelDataRule($excelData, $titleRule);
+
+        return $excelData;
+    }
+
     public function convertExcelDataRule($excelData, array $rule)
     {
         $newData = [];

@@ -32,6 +32,10 @@ class ClueUploadService extends BaseService
 
     protected $excelService;
 
+    protected $clueService;
+
+    protected $importRep;
+
     protected $attachmentsField = [
         'attachment_type' => 'attachment_type',
         'newFileName' => 'filename',
@@ -44,7 +48,9 @@ class ClueUploadService extends BaseService
     public function __construct(
         UploadService $uploadService,
         FileRep $fileRep,
-        ExcelService $excelService
+        ExcelService $excelService,
+        ClueService $clueService,
+        ImportRep $importRep
     )
     {
         parent::__construct();
@@ -52,6 +58,8 @@ class ClueUploadService extends BaseService
         $this->uploadService = $uploadService;
         $this->fileRep = $fileRep;
         $this->excelService = $excelService;
+        $this->clueService = $clueService;
+        $this->importRep = $importRep;
     }
 
     /**
@@ -126,8 +134,10 @@ class ClueUploadService extends BaseService
 
             // TODO 导入excel数据
             $excelData = $this->getExcelData($params);
-            dd($excelData);
+
             // TODO 处理线索保存
+            $result = $this->setSaveClueData($excelData, $params);
+
             return $params['fileInfo'];
         }catch(\Exception $e){
             throw new \Exception($e->getMessage());
@@ -189,10 +199,11 @@ class ClueUploadService extends BaseService
 
     protected function getExcelData(array $params)
     {
-        $titleRule = [];
+        $titleRule = $ruleInfo = [];
         $filePath = $params['fileInfo']['file_path'] ?? '';
         $filePath = public_path($filePath);
         $params['file_path'] = $filePath;
+        $params['ruleInfo'] = config('clue.clue_excel');
         if(! file_exists($filePath)){
             throw new \Exception('The excel file does not exists!');
         }
@@ -200,26 +211,67 @@ class ClueUploadService extends BaseService
         // 获取excel数据
         $excelData = $this->excelService->getExcelData($params);
 
-        $excelData = (isset($excelData[0][0]) && is_array($excelData[0][0])) ? $excelData[0] : $excelData;
-
-        // todo 处理空数据及多个sheet问题
-        $excelData = array_filter($excelData);
-
-        // 过滤标题规则
-        $clueExcelConfig = config('clue.clue_excel');
-        $titleRule['titleRule'] = _isset($clueExcelConfig, 'title_rule', []);
-        $titleRule['typeRule'] = _isset($clueExcelConfig, 'type_rule', []);
-        $titleRule['dicRule'] = _isset($clueExcelConfig, 'dic_rule', []);
-
-        $excelData = $this->excelService->convertExcelDataRule($excelData, $titleRule);
+        // 获取excel转换数据
+        $excelData = $this->excelService->getConvertExcelData($excelData, $params);
 
         return $excelData;
     }
 
-    protected function setSaveClueData()
+    protected function setSaveClueData(array $excelData, array $params = [])
     {
+        $error = [];
         // todo 检测编号重复数据
+        $error = $this->verifyClueNumber($excelData, $error);
+
+        // 处理失败信息
+        $result = $this->setFailedData($excelData, $error, $params);
+
+        // 处理线索数据保存
+        $this->clueService->saveExcelClue($excelData);
+        
+        return $result;
+
+    }
+
+    protected function verifyClueNumber(array $data, & $error)
+    {
         $condition = [];
 
+        $condition['number'] = array_column($data, 'number');
+        $result = $this->clueService->checkClueByNumber($condition);
+        $result = array_column($result, 'number', 'number');
+        foreach($data as $key => $value){
+            if(isset($result[$value['number']])){
+                $error[$key]['number'] = '编号重复';
+            }
+        }
+
+        return $error;
+    }
+
+    protected function setFailedData(array & $data, $error, $params)
+    {
+        $failedData = [];
+        if(! $data || ! $error) return [];
+        foreach($error as $k => $v){
+            if(isset($data[$k])){
+                $failedData[] = [
+                    'data' => $data[$k],
+                    'error' => $v,
+                ];
+                unset($data[$k]);
+            }
+        }
+
+        $rt = [
+            'file_id' => $params['fileInfo']['file_id'] ?? 0,
+            'file_info' => json_encode($params, 'fileInfo', []),
+            'failed_data' => json_encode($failedData),
+        ];
+
+        // 存储失败数据
+        $this->importRep->saveImportFailedData([$rt]);
+
+        return $failedData;
     }
 }

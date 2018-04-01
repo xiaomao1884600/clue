@@ -265,4 +265,25 @@ class ClueRep extends BaseRep
 
         return $result;
     }
+
+    /**
+     * 通过编号查询线索信息
+     * @param array $condition
+     * @return array
+     */
+    public function checkClueByNumber(array $condition)
+    {
+        $result = [];
+
+        $number = $condition['number'] ?? '';
+        $number = convertToArray($number);
+        if(! $number) return $result;
+
+        $query = $this->clue
+            ->whereIn('number', $number)
+            ->get()
+            ->toArray();
+
+        return $result;
+    }
 }
