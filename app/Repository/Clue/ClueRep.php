@@ -286,4 +286,19 @@ class ClueRep extends BaseRep
 
         return $result;
     }
+
+    /**
+     * 线索结办
+     * @param array $condition
+     * @return array|bool|null
+     */
+    public function setClueClosed(array $condition)
+    {
+        $clueId = _isset($condition, 'clue_id');
+        $clueId = convertToArray($clueId);
+        if(! $clueId) return [];
+        return $this->clue
+            ->whereIn('clue_id', $clueId)
+            ->update(['clue_state' => 1]);
+    }
 }

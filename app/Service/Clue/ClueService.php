@@ -401,4 +401,19 @@ class ClueService extends BaseService
         return [];
     }
 
+    /**
+     * 结办
+     * @param array $params
+     */
+    public function setClueClosed(array $params)
+    {
+        $result = [];
+        $clueId = $this->checkRequestClueId($params);
+
+        $condition = ['clue_id' => $clueId];
+
+        $result = $this->clueRep->setClueClosed($condition);
+        return ['result' => true];
+    }
+
 }

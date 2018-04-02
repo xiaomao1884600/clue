@@ -174,4 +174,19 @@ class ClueController extends Controller
             return ApiExceptions::handle($exception);
         }
     }
+
+    /**
+     * 结办线索
+     * @param Request $request
+     * @param ClueService $clueService
+     * @return array|mixed
+     */
+    public function setClueClosed(Request $request, ClueService $clueService)
+    {
+        try {
+            return Message::success($clueService->setClueClosed(requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
+    }
 }

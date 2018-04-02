@@ -85,6 +85,9 @@ Route::group(['middleware' => []], function(){
         // 导入线索excel
         Route::any('import_clue_excel', 'UploadController@importClueExcel');
 
+        // 结办线索
+        Route::any('set_clue_closed', 'ClueController@setClueClosed');
+
     });
 
 
