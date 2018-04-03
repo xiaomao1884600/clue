@@ -66,6 +66,7 @@ class ClueSearchService extends BaseService
 
         // TODO 定义搜索关键字条件
         $condition = $this->setKeyWordSearchCondition($params);
+        
         if (!$condition) return [];
 
         // 查询线索信息
@@ -124,28 +125,33 @@ class ClueSearchService extends BaseService
     protected function setKeyWordSearchCondition(array $params)
     {
         $keyWord = trim(_isset($params, 'keyword'));
-        if (!$keyWord) return [];
+
         $orders = _isset($params, 'orders');
 
         // TODO 处理检索条件
         $conditon = [
-            'orWhere' => [
+            'orWhere' => [],
+            'orderBy' => [],
+        ];
+
+        if($keyWord){
+            $conditon['orWhere'] =  [
                 'source' => $keyWord,
                 'number' => $keyWord,
                 'reflected_name' => $keyWord,
                 'company' => $keyWord,
 
-            ],
-            'orderBy' => [],
-        ];
+            ];
+        }
 
         if ($orders) {
             foreach ($orders as $k => $v) {
                 $v['order'] = (int)$v['order'];
                 $conditon['orderBy'][] = ['field' => $v['column'], 'order' => self::ORDER_TYPE[$v['order']]];
             }
-            $conditon['orderBy'][] = ['field' => 'entry_time', 'order' => self::ORDER_TYPE[self::ORDER_DESC]];
         }
+
+        $conditon['orderBy'][] = ['field' => 'entry_time', 'order' => self::ORDER_TYPE[self::ORDER_DESC]];
 
         return $conditon;
     }
@@ -218,8 +224,9 @@ class ClueSearchService extends BaseService
                 $v['order'] = (int)$v['order'];
                 $conditon['orderBy'][] = ['field' => $v['column'], 'order' => self::ORDER_TYPE[$v['order']]];
             }
-            $conditon['orderBy'][] = ['field' => 'entry_time', 'order' => self::ORDER_TYPE[self::ORDER_DESC]];
         }
+
+        $conditon['orderBy'][] = ['field' => 'entry_time', 'order' => self::ORDER_TYPE[self::ORDER_DESC]];
 
         return $conditon;
     }
