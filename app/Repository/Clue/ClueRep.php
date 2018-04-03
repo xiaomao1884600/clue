@@ -55,10 +55,13 @@ class ClueRep extends BaseRep
         $result = [];
 
         $number = $condition['number'] ?? '';
+        $clueId = $condition['clue_id'] ?? '';
+        $clueId = convertToArray($clueId);
         if(! $number) return $result;
 
         $query = $this->clue
             ->where('number', $number)
+            ->whereNotIn('clue_id', $clueId)
             ->first();
 
         if($query){

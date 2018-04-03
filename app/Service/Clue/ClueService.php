@@ -136,13 +136,14 @@ class ClueService extends BaseService
         $result = ['result' => false];
 
         $number = _isset($params, 'number');
+        $clueId = $params['clue_id'] ?? '';
 
         if(! $number){
             throw new \Exception('The number is required !');
         }
 
         // 检测是否存在编号信息
-        if($this->clueRep->getClueByNumber(['number' => $number])){
+        if($this->clueRep->getClueByNumber(['number' => $number, 'clue_id' => $clueId])){
             $result['result'] = true;
         };
 
