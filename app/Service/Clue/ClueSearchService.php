@@ -273,7 +273,11 @@ class ClueSearchService extends BaseService
         // 获取公文信息
         $responseData['document'] = $this->getDocumentByReflectedName($condition);
 
-        // TODO 获取案件信息
+        // TODO 获取案件信息，临时测试信息
+        // 案件线索
+        $responseData['case']['case_clue'] = $responseData['clue'];
+        // 立案信息
+        $responseData['case']['case_filing'] = $responseData['clue'];
 
         return $responseData;
     }
