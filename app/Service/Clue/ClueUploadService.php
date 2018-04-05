@@ -9,9 +9,10 @@
 namespace App\Service\Clue;
 
 
+use App\Model\Clue\ExcelConfig;
 use App\Repository\Clue\FileRep;
 use App\Repository\Clue\ImportRep;
-use App\Service\Excel\ExcelService;
+use App\Service\Excel\ImportExcelService;
 use App\Service\Foundation\BaseService;
 use App\Service\Upload\UploadService;
 use Illuminate\Http\Request;
@@ -31,11 +32,9 @@ class ClueUploadService extends BaseService
 
     protected $fileRep;
 
-    protected $excelService;
-
     protected $clueService;
-
-    protected $importRep;
+    
+    protected $importExcelService;
 
     protected $attachmentsField = [
         'attachment_type' => 'attachment_type',
@@ -49,18 +48,16 @@ class ClueUploadService extends BaseService
     public function __construct(
         UploadService $uploadService,
         FileRep $fileRep,
-        ExcelService $excelService,
         ClueService $clueService,
-        ImportRep $importRep
+        ImportExcelService $importExcelService
     )
     {
         parent::__construct();
 
         $this->uploadService = $uploadService;
         $this->fileRep = $fileRep;
-        $this->excelService = $excelService;
         $this->clueService = $clueService;
-        $this->importRep = $importRep;
+        $this->importExcelService = $importExcelService;
     }
 
     /**
@@ -129,12 +126,13 @@ class ClueUploadService extends BaseService
     public function importClueExcel(Request $request, array $params)
     {
         try{
-
+            // 
+            $params['op_type'] = ExcelConfig::OP_TYPE_CLUE;
             // TODO 上传excel文件
-            $params['fileInfo'] = $this->uploadExcel($request, $params);
+            $params['fileInfo'] = $this->importExcelService->uploadExcel($request, $params);
 
             // TODO 导入excel数据
-            $excelData = $this->getExcelData($params);
+            $excelData = $this->importExcelService->getExcelData($params);
 
             // TODO 处理线索保存
             $result = $this->setSaveClueData($excelData, $params);
@@ -143,33 +141,6 @@ class ClueUploadService extends BaseService
         }catch(\Exception $e){
             throw new \Exception($e->getMessage());
         }
-    }
-
-    /**
-     * 上传excel
-     * @param Request $request
-     * @param array $params
-     * @return array
-     */
-    protected function uploadExcel(Request $request, array $params)
-    {
-        // 检测文件有效
-        $this->checkUploadValid($request, $params);
-
-        // 上传文件
-        $file = current($request->file());
-
-        $params['disk'] = $this->excelDisk;
-        $params['attachment_type'] = 'excel';
-        $params['path'] = $this->excelImportPath;
-
-        // 上传文件
-        $fileInfo = $this->uploadService->uploadFile($file, $params);
-
-        // 存储文件信息
-        $fileInfo['file_id'] = $this->saveAttachments($fileInfo);
-
-        return $fileInfo;
     }
 
     /**
@@ -198,26 +169,6 @@ class ClueUploadService extends BaseService
         return true;
     }
 
-    protected function getExcelData(array $params)
-    {
-        $titleRule = $ruleInfo = [];
-        $filePath = $params['fileInfo']['file_path'] ?? '';
-        $filePath = public_path($filePath);
-        $params['file_path'] = $filePath;
-        $params['ruleInfo'] = config('clue.clue_excel');
-        if(! file_exists($filePath)){
-            throw new \Exception('The excel file does not exists!');
-        }
-
-        // 获取excel数据
-        $excelData = $this->excelService->getExcelData($params);
-
-        // 获取excel转换数据
-        $excelData = $this->excelService->getConvertExcelData($excelData, $params);
-
-        return $excelData;
-    }
-
     protected function setSaveClueData(array $excelData, array $params = [])
     {
         $result = [];
@@ -227,7 +178,7 @@ class ClueUploadService extends BaseService
         $error = $this->verifyClueNumber($excelData, $error);
 
         // 处理失败信息
-        $failedData = $this->setFailedData($excelData, $error, $params);
+        $failedData = $this->importExcelService->setFailedData($excelData, $error, $params);
 
         // 处理线索数据保存
         $this->clueService->saveExcelClue($excelData);
@@ -245,40 +196,21 @@ class ClueUploadService extends BaseService
         $condition = [];
 
         $condition['number'] = array_column($data, 'number');
+
         $result = $this->clueService->checkClueByNumber($condition);
         $result = array_column($result, 'number', 'number');
+
         foreach($data as $key => $value){
+            if(! isset($value['number'])){
+                $error[$key]['number'] = '编号不存在';
+                continue;
+            }
+
             if(isset($result[$value['number']])){
                 $error[$key]['number'] = '编号重复';
             }
         }
 
         return $error;
-    }
-
-    protected function setFailedData(array & $data, $error, $params)
-    {
-        $failedData = [];
-        if(! $data || ! $error) return [];
-        foreach($error as $k => $v){
-            if(isset($data[$k])){
-                $failedData[] = [
-                    'data' => $data[$k],
-                    'error' => $v,
-                ];
-                unset($data[$k]);
-            }
-        }
-
-        $rt = [
-            'file_id' => $params['fileInfo']['file_id'] ?? 0,
-            'file_info' => json_encode(_isset($params, 'fileInfo', [])),
-            'failed_data' => json_encode($failedData),
-        ];
-
-        // 存储失败数据
-        $this->importRep->saveImportFailedData([$rt]);
-
-        return $failedData;
     }
 }
