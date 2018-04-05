@@ -33,7 +33,7 @@ class ClueUploadService extends BaseService
     protected $fileRep;
 
     protected $clueService;
-    
+
     protected $importExcelService;
 
     protected $attachmentsField = [
@@ -126,7 +126,8 @@ class ClueUploadService extends BaseService
     public function importClueExcel(Request $request, array $params)
     {
         try{
-            // 
+            //
+
             $params['op_type'] = ExcelConfig::OP_TYPE_CLUE;
             // TODO 上传excel文件
             $params['fileInfo'] = $this->importExcelService->uploadExcel($request, $params);
@@ -173,9 +174,13 @@ class ClueUploadService extends BaseService
     {
         $result = [];
         $error = [];
+        $requiredRule = $params['ruleInfo']['required_rule'] ?? [];
 
-        // todo 检测编号重复数据
-        $error = $this->verifyClueNumber($excelData, $error);
+        // 检测必填项
+        $error = $this->importExcelService->verifyRequired($excelData, $requiredRule, $error);
+
+        // todo 检测编号重复数据并删除
+        $this->clearVerifyClueNumber($excelData);
 
         // 处理失败信息
         $failedData = $this->importExcelService->setFailedData($excelData, $error, $params);
@@ -191,26 +196,14 @@ class ClueUploadService extends BaseService
 
     }
 
-    protected function verifyClueNumber(array $data, & $error)
+    protected function clearVerifyClueNumber(array $data)
     {
         $condition = [];
 
         $condition['number'] = array_column($data, 'number');
 
-        $result = $this->clueService->checkClueByNumber($condition);
-        $result = array_column($result, 'number', 'number');
+        $result = $this->clueService->clearClueByNumber($condition);
 
-        foreach($data as $key => $value){
-            if(! isset($value['number'])){
-                $error[$key]['number'] = '编号不存在';
-                continue;
-            }
-
-            if(isset($result[$value['number']])){
-                $error[$key]['number'] = '编号重复';
-            }
-        }
-
-        return $error;
+        return $data;
     }
 }

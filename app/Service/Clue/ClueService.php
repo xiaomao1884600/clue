@@ -418,4 +418,17 @@ class ClueService extends BaseService
         return ['result' => true];
     }
 
+    /**
+     * 清除重复编号数据
+     * @param array $params
+     * @return array
+     */
+    public function clearClueByNumber(array $params)
+    {
+        $number = _isset($params, 'number');
+
+        // 清除重复编号线索信息
+        return $this->clueRep->clearClueByNumber(['number' => $number]);
+    }
+
 }

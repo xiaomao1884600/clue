@@ -142,6 +142,10 @@ class ClueSearchService extends BaseService
                 'company' => $keyWord,
 
             ];
+            // 检测是否上级交办搜索
+            if($keyWord == '上级交办'){
+                $conditon['orWhere']['supervisor'] = 1;
+            }
         }
 
         if ($orders) {

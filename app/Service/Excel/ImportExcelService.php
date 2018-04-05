@@ -61,6 +61,7 @@ class ImportExcelService extends BaseService
             'title_rule' => [],
             'type_rule' => [],
             'dic_rule' => [],
+            'required_rule' => [],
         ];
         $opType = $params['op_type'] ?? [];
         if(! $opType){
@@ -80,6 +81,11 @@ class ImportExcelService extends BaseService
             // 字典
             if($value['field_dic']){
                 $data['dic_rule'][$value['title']] = $value['field_dic'];
+            }
+
+            // 必填
+            if($value['field_required']){
+                $data['required_rule'][$value['title']] = $value['field'];
             }
         }
 
@@ -154,7 +160,7 @@ class ImportExcelService extends BaseService
         return true;
     }
 
-    public function getExcelData(array $params)
+    public function getExcelData(array &$params)
     {
         $titleRule = $ruleInfo = [];
         $filePath = $params['fileInfo']['file_path'] ?? '';
@@ -204,5 +210,29 @@ class ImportExcelService extends BaseService
         $this->importRep->saveImportFailedData([$rt]);
 
         return $failedData;
+    }
+
+    /**
+     * 检测必填
+     * @param array $data
+     * @param $requiredRule
+     * @param $error
+     * @return array
+     */
+    public function verifyRequired(array $data, $requiredRule,  & $error)
+    {
+        $condition = [];
+        if(! $requiredRule) return [];
+        $requiredRule = array_flip($requiredRule);
+
+        foreach($data as $key => $value){
+            foreach($value as $field => $v){
+                if(isset($requiredRule[$field]) && ! $v){
+                    $error[$key][$field] = "【" . $requiredRule[$field] . '】必填';
+                }
+            }
+        }
+
+        return $error;
     }
 }

@@ -304,4 +304,24 @@ class ClueRep extends BaseRep
             ->whereIn('clue_id', $clueId)
             ->update(['clue_state' => 1]);
     }
+
+    /**
+     * 通过编号删除线索
+     * @param array $condition
+     * @return array
+     */
+    public function clearClueByNumber(array $condition)
+    {
+        $result = [];
+
+        $number = $condition['number'] ?? '';
+        $number = convertToArray($number);
+        if(! $number) return $result;
+
+        $result = $this->clue
+            ->whereIn('number', $number)
+            ->delete();
+
+        return $result;
+    }
 }
