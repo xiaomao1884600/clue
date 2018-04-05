@@ -10,6 +10,7 @@ namespace App\Service\Clue;
 
 
 use App\Repository\Clue\FileRep;
+use App\Repository\Clue\ImportRep;
 use App\Service\Excel\ExcelService;
 use App\Service\Foundation\BaseService;
 use App\Service\Upload\UploadService;

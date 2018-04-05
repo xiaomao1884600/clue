@@ -22,6 +22,7 @@ class ClueService extends BaseService
      * @var array
      */
     protected $clueField = [
+        'clue_id' => 'clue_id',
         'source' => 'source',
         'number' => 'number',
         'reflected_name' => 'reflected_name',
