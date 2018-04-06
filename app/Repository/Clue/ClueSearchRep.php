@@ -9,6 +9,7 @@
 namespace App\Repository\Clue;
 
 
+use App\Model\Cases\CaseClue;
 use App\Model\Clue\Clue;
 use App\Model\Clue\ClueDetail;
 use App\Model\Document\Document;
@@ -22,16 +23,20 @@ class ClueSearchRep extends BaseRep
 
     protected $document;
 
+    protected $caseClue;
+
     public function __construct(
         Clue $clue,
         ClueDetail $clueDetail,
-        Document $document
+        Document $document,
+        CaseClue $caseClue
     )
     {
         parent::__construct();
         $this->clue = $clue;
         $this->clueDetail = $clueDetail;
         $this->document = $document;
+        $this->caseClue = $caseClue;
     }
 
     /**
@@ -104,6 +109,46 @@ class ClueSearchRep extends BaseRep
                 ->orderBy('document_date', 'DESC')
                 ->paginate($size)
                 ->toArray();
+
+        return $result;
+    }
+
+    /**
+     * 获取案件线索被反映人数据信息
+     * @param array $condition
+     * @return array
+     */
+    public function getCaseClueByReflectedName(array $condition)
+    {
+        $reflectedName = _isset($condition, 'reflected_name');
+        $size = _isset($condition, 'size', PAGESIZE);
+        if(! $reflectedName) return [];
+
+        $result = $this->caseClue
+            ->where('reflected_name', $reflectedName)
+            ->orderBy('clue_accept_time', 'DESC')
+            ->paginate($size)
+            ->toArray();
+
+        return $result;
+    }
+
+    /**
+     * 获取案件立案被反映人数据信息
+     * @param array $condition
+     * @return array
+     */
+    public function getCaseFilingByReflectedName(array $condition)
+    {
+        $reflectedName = _isset($condition, 'reflected_name');
+        $size = _isset($condition, 'size', PAGESIZE);
+        if(! $reflectedName) return [];
+        // TODO 后期改为立案的数据
+        $result = $this->caseClue
+            ->where('reflected_name', $reflectedName)
+            ->orderBy('clue_accept_time', 'DESC')
+            ->paginate($size)
+            ->toArray();
 
         return $result;
     }

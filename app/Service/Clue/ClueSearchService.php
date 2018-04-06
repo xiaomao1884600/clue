@@ -17,6 +17,8 @@ class ClueSearchService extends BaseService
 {
     protected $clueSearchRep;
 
+    protected $clueDic;
+
     const ORDER_ASC = 1;
     const ORDER_DESC = 0;
 
@@ -42,11 +44,13 @@ class ClueSearchService extends BaseService
     ];
 
     public function __construct(
-        ClueSearchRep $clueSearchRep
+        ClueSearchRep $clueSearchRep,
+        ClueDic $clueDic
     )
     {
         parent::__construct();
         $this->clueSearchRep = $clueSearchRep;
+        $this->clueDic = $clueDic;
     }
 
     /**
@@ -279,9 +283,9 @@ class ClueSearchService extends BaseService
 
         // TODO 获取案件信息，临时测试信息
         // 案件线索
-        $responseData['case']['case_clue'] = $responseData['clue'];
+        $responseData['case']['case_clue'] = $this->getCaseClueByReflectedName($condition);
         // 立案信息
-        $responseData['case']['case_filing'] = $responseData['clue'];
+        $responseData['case']['case_filing'] = $this->getCaseFilingByReflectedName($condition);
 
         return $responseData;
     }
@@ -293,6 +297,7 @@ class ClueSearchService extends BaseService
      */
     protected function getClueInfoByReflectedName(array $params)
     {
+        $data = [];
         // 设置页码
         $this->setPage($params);
 
@@ -308,7 +313,21 @@ class ClueSearchService extends BaseService
         $result = $this->clueSearchRep->getClueKeyWordSearch($condition);
         $result['data'] = $this->processClueInfo($result['data']);
 
-        return Response::responsePaginate($result, $result['data']);
+        // 处理字典信息
+        $result['data'] = $this->processClueDic($result['data']);
+
+        $data = Response::responsePaginate($result, $result['data']);
+
+        return $data;
+    }
+
+    /**
+     * 处理线索字典信息
+     * @param array $data
+     */
+    protected function processClueDic(array $data)
+    {
+        return $this->clueDic->convertClueDic($data);
     }
 
     /**
@@ -322,6 +341,36 @@ class ClueSearchService extends BaseService
         $this->setPage($params);
 
         $result = $this->clueSearchRep->getDocumentByReflectedName(['reflected_name' => $params['reflected_name']]);
+
+        return Response::responsePaginate($result, $result['data']);
+    }
+
+    /**
+     * 获取案件问题线索
+     * @param array $params
+     * @return array
+     */
+    protected function getCaseClueByReflectedName(array $params)
+    {
+        // 设置页码
+        $this->setPage($params);
+
+        $result = $this->clueSearchRep->getCaseClueByReflectedName(['reflected_name' => $params['reflected_name']]);
+
+        return Response::responsePaginate($result, $result['data']);
+    }
+
+    /**
+     * 获取案件立案信息
+     * @param array $params
+     * @return array
+     */
+    protected function getCaseFilingByReflectedName(array $params)
+    {
+        // 设置页码
+        $this->setPage($params);
+
+        $result = $this->clueSearchRep->getCaseClueByReflectedName(['reflected_name' => $params['reflected_name']]);
 
         return Response::responsePaginate($result, $result['data']);
     }

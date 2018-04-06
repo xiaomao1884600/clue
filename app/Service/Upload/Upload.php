@@ -40,11 +40,11 @@ class Upload
     ];
 
     protected static $fileSize = [
-        'audio' => 1024000,
-        'img' => 102400,
-        'pdf' => 1024000,
-        'word' => 1024000,
-        'excel' => 1024000,
+        'audio' => 50240000,
+        'img' => 1024000,
+        'pdf' => 10240000,
+        'word' => 10240000,
+        'excel' => 50240000,
     ];
 
     public static function checkFileType($fileType, $type)
