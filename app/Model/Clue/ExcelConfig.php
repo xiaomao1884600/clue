@@ -22,5 +22,5 @@ class ExcelConfig extends BaseModel
     const OP_TYPE_CASE_CLUE = 2;
 
     // 案件立案
-    const OP_TYPE_CASE_FAILING = 3;
+    const OP_TYPE_CASE_FILING = 3;
 }

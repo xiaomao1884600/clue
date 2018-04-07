@@ -82,8 +82,8 @@ Route::group(['middleware' => []], function(){
         // 线索超期提醒
         Route::any('overdue', 'ClueController@overdueRemind');
 
-        // 导入线索excel
-        Route::any('import_clue_excel', 'UploadController@importClueExcel');
+//        // 导入线索excel
+//        Route::any('import_clue_excel', 'UploadController@importClueExcel');
 
         // 结办线索
         Route::any('set_clue_closed', 'ClueController@setClueClosed');
@@ -115,4 +115,19 @@ Route::group(['middleware' => []], function(){
 Route::group(['namespace' => 'Foundation', 'prefix' => 'dic'], function(){
     // 上传线索附件
     Route::any('getdic', 'DicController@dicList');
+});
+
+/**
+ * 导入Excel
+ */
+Route::group(['namespace' => 'Clue', 'prefix' => 'excel'], function(){
+    // 导入离线线索
+    Route::any('import_clue', 'UploadController@importClueExcel');
+
+    //导入案件问题线索
+    Route::any('import_case_clue', 'UploadController@importCaseClueExcel');
+
+    //导入立案
+    Route::any('import_filing', 'UploadController@importFilingExcel');
+
 });

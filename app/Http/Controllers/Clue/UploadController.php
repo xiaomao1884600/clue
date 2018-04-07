@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Clue;
 
 
 use App\Http\Controllers\Controller;
+use App\Service\CaseS\CaseUploadService;
 use App\Service\Clue\ClueUploadService;
 use App\Service\Exceptions\ApiExceptions;
 use App\Service\Exceptions\Message;
@@ -41,9 +42,24 @@ class UploadController extends Controller
         }
     }
 
-    public function formExcel()
+    public function formExcel(Request $request)
     {
-        return view('excel');
+        $params = $request->all();
+        $type = $params['type'] ?? 'clue';
+
+        if('clue' == $type){
+            return view('excel');
+        }
+
+        if('case_clue' == $type){
+            return view('caseclue');
+        }
+
+        if('filing' == $type){
+            return view('filing');
+        }
+
+        return [];
     }
 
     /**
@@ -55,6 +71,36 @@ class UploadController extends Controller
     {
         try {
             return Message::success($clueUploadService->importClueExcel($request, requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
+    }
+
+    /**
+     *  导入案件问题线索
+     * @param Request $request
+     * @param CaseUploadService $caseUploadService
+     * @return array|mixed
+     */
+    public function importCaseClueExcel(Request $request, CaseUploadService $caseUploadService)
+    {
+        try {
+            return Message::success($caseUploadService->importCaseClue($request, requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
+    }
+
+    /**
+     *  导入立案
+     * @param Request $request
+     * @param CaseUploadService $caseUploadService
+     * @return array|mixed
+     */
+    public function importFilingExcel(Request $request, CaseUploadService $caseUploadService)
+    {
+        try {
+            return Message::success($caseUploadService->importFiling($request, requestData($request)));
         } catch (\Exception $exception) {
             return ApiExceptions::handle($exception);
         }

@@ -5,9 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
   </head>
 <body>
-<form method="post" enctype="multipart/form-data" action="excel/import_clue">
+<form method="post" enctype="multipart/form-data" action="excel/import_case_clue">
     <input type="file" name="file">
-    <button type="submit"> 导入excel </button>
+    <button type="submit"> 导入案件问题线索excel </button>
 </form>
 </body>
 </html>

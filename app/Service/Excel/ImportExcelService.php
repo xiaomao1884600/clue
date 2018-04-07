@@ -106,9 +106,9 @@ class ImportExcelService extends BaseService
         // 上传文件
         $file = current($request->file());
 
-        $params['disk'] = $this->excelDisk;
+        $params['disk'] = $params['disk'] ?? $this->excelDisk;
         $params['attachment_type'] = 'excel';
-        $params['path'] = $this->excelImportPath;
+        $params['path'] = $params['path'] ?? $this->excelImportPath;
 
         // 上传文件
         $fileInfo = $this->uploadService->uploadFile($file, $params);
