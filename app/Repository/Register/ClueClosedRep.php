@@ -33,7 +33,7 @@ class ClueClosedRep extends BaseRep
     public function getClosedList(array $params, $isAll = false){
         $table = $this->clue->getTableName();
         $table2 = $this->clueDetail->getTableName();
-        $orders = $params['order'];
+        $orders = isset($params['order']) ?: [];
         $pagesize = isset($params['pagesize']) && $params['pagesize'] ?: 5;
         $page = isset($params['page']) && $params['page'] ?: 1;
         $query = $this->clue
