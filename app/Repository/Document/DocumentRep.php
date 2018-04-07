@@ -38,7 +38,7 @@ class DocumentRep extends BaseRep
     public function getDocumentList(array $params, $isAll)
     {
         $table = $this->documentModel->getTableName();
-        $orders = $params['order'];
+        $orders = isset($params['order']) ?: [];
         $pagesize = isset($params['pagesize']) && $params['pagesize'] ?: 1;
         $page = isset($params['page']) && $params['page'] ?: 2;
         $query = $this->documentModel
