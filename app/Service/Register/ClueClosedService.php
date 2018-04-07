@@ -43,24 +43,6 @@ class ClueClosedService extends BaseService
      * @return array
      */
     public function getClosedListService(array $params){
-        //处理搜索条件
-        $params = [
-            'beginDate' => '2018-03-15',
-            'endDate' => '2018-03-20',
-            'source' => '省十一巡交办',
-            'orders' => [
-                [
-                    'column' => 'clue_id',
-                    'order' => 0//1升0降,默认升序
-                ],
-                [
-                    'column' => 'pk_id',
-                    'order' => 1
-                ]
-            ],
-            'export' => 1,//是否导出，默认0，即为列表查询，1触发导出
-            'print' => 0//打印参数，默认0正常查询，1打印列表数据
-        ];
         //检查查询日期是否正确
         $this->checkSearchDate($params);
         //拼装最终搜索条件
