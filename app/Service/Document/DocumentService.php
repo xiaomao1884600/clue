@@ -20,16 +20,6 @@ use Excel;
 
 class DocumentService extends BaseService
 {
-    protected $saveParams = [
-        'document_date' => '2018-03-25',
-        'document_code' => '政发〔97〕8号',
-        'username' => '王大锤',
-        'document_type' => 'excel',//发文类型
-        'document_title' => '发文标题',
-        'document_user' => '发文人',
-        'document_unit' => '发文单位',
-        'memo' => '备注信息'
-    ];
     
     protected $dacumentHeader = [
         [
@@ -58,8 +48,6 @@ class DocumentService extends BaseService
      */
     public function saveDocumentService(array $params)
     {
-        //测试参数
-        $params = $this->saveParams;
         //校验必填项
         $this->checkPostData($params);
         //过滤特殊字符，防止写入数据报错
@@ -117,24 +105,6 @@ class DocumentService extends BaseService
      */
     public function documentListService(array $params)
     {
-        $params = [
-            'beginDate' => '2018-03-15',//发文日期开始
-            'endDate' => '2018-03-27',//发文日期结束
-            'document_type' => 'excel',//发文类型
-            'document_user' => '发文人',//发文类型
-            'orders' => [
-                [
-                    'column' => 'document_type',
-                    'order' => 0//1升0降,默认升序
-                ],
-                [
-                    'column' => 'document_code',
-                    'order' => 1
-                ]
-            ],
-            'export' => 0,//是否导出，默认0，即为列表查询，1触发导出
-            'print' => 0//打印参数，默认0正常查询，1打印列表数据
-        ];
         //检查查询日期是否正确
         $this->checkSearchDate($params);
         //拼装最终搜索条件
