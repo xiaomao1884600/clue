@@ -242,9 +242,25 @@ class ClueService extends BaseService
         $result['clue_detail'] = $this->clueRep->getClueDetailByClueId(['clue_id' => $clueId]);
 
         // 获取线索附件信息
-        $result['clue_attachments'] = $this->clueRep->getClueAttachmentsByClueId(['clue_id' => $clueId]);
+        $result['clue_attachments'] = $this->getClueAttachments(['clue_id' => $clueId]);
 
         return $result;
+    }
+
+    public function getClueAttachments(array $params)
+    {
+        $clueId = $params['clue_id'] ?? '';
+        if(! $clueId) return [];
+        $data = $this->clueRep->getClueAttachmentsByClueId(['clue_id' => $clueId]);
+        if(! $data) return [];
+        array_walk($data, function(& $value){
+            $value['is_img'] = 0;
+            if('img' == $value['attachment_type']){
+                $value['is_img'] = 1;
+            }
+        });
+
+        return $data;
     }
 
     public function deleteClue(array $params)
