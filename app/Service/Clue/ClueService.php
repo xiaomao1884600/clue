@@ -358,10 +358,6 @@ class ClueService extends BaseService
      */
     public function overdueRemind(array $params)
     {
-        $params = [
-            'page' => 1,
-            'pagesize' => 20
-        ];
         return $this->clueRep->getOverdueRemind($params);
     }
 
