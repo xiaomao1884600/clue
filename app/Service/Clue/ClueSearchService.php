@@ -43,6 +43,45 @@ class ClueSearchService extends BaseService
         ],
     ];
 
+
+    protected $caseClueField = [
+        'pk_id',
+        'case_clue_id',
+        'clue_source',
+        'clue_number',
+        'user_number',
+        'clue_agency',
+        'clue_accept_time',
+        'clue_disposal_type',
+        'clue_disposal_approval_time',
+        'reflected_name',
+        'company',
+        'post',
+        'level',
+        'cadre_auth',
+        'department',
+        'station',
+        'units_event',
+        'clue_supervisor',
+    ];
+
+    protected $caseFilingField = [
+        'id',
+        'source',
+        'number',
+        'reflected_name',
+        'company',
+        'post',
+        'level',
+        'disposal_type',
+        'trial_accept_time',
+        'case_num',
+        'trial_accept_time',
+        'case_user_num',
+        'trial_office',
+        'end_time',
+    ];
+
     public function __construct(
         ClueSearchRep $clueSearchRep,
         ClueDic $clueDic
@@ -356,6 +395,7 @@ class ClueSearchService extends BaseService
         $this->setPage($params);
 
         $result = $this->clueSearchRep->getCaseClueByReflectedName(['reflected_name' => $params['reflected_name']]);
+        $result['data'] = $result['data'] ? screenArray($result['data'], $this->caseClueField) : [];
 
         return Response::responsePaginate($result, $result['data']);
     }
@@ -370,7 +410,8 @@ class ClueSearchService extends BaseService
         // 设置页码
         $this->setPage($params);
 
-        $result = $this->clueSearchRep->getCaseClueByReflectedName(['reflected_name' => $params['reflected_name']]);
+        $result = $this->clueSearchRep->getCaseFilingByReflectedName(['reflected_name' => $params['reflected_name']]);
+        $result['data'] = $result['data'] ? screenArray($result['data'], $this->caseFilingField) : [];
 
         return Response::responsePaginate($result, $result['data']);
     }

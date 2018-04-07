@@ -10,6 +10,7 @@ namespace App\Repository\Clue;
 
 
 use App\Model\Cases\CaseClue;
+use App\Model\Cases\Filing;
 use App\Model\Clue\Clue;
 use App\Model\Clue\ClueDetail;
 use App\Model\Document\Document;
@@ -25,11 +26,14 @@ class ClueSearchRep extends BaseRep
 
     protected $caseClue;
 
+    protected $filing;
+
     public function __construct(
         Clue $clue,
         ClueDetail $clueDetail,
         Document $document,
-        CaseClue $caseClue
+        CaseClue $caseClue,
+        Filing $filing
     )
     {
         parent::__construct();
@@ -37,6 +41,7 @@ class ClueSearchRep extends BaseRep
         $this->clueDetail = $clueDetail;
         $this->document = $document;
         $this->caseClue = $caseClue;
+        $this->filing = $filing;
     }
 
     /**
@@ -144,9 +149,9 @@ class ClueSearchRep extends BaseRep
         $size = _isset($condition, 'size', PAGESIZE);
         if(! $reflectedName) return [];
         // TODO 后期改为立案的数据
-        $result = $this->caseClue
+        $result = $this->filing
             ->where('reflected_name', $reflectedName)
-            ->orderBy('clue_accept_time', 'DESC')
+            ->orderBy('trial_accept_time', 'DESC')
             ->paginate($size)
             ->toArray();
 
