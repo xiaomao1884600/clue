@@ -128,8 +128,8 @@ class DocumentService extends BaseService
      */
     public function checkSearchDate(array $params)
     {
-        $beginDateline =  $params['beginDate'] ? strtotime($params['beginDate'] . ' 00:00:00') : 0;
-        $endDateline =  $params['endDate'] ? strtotime($params['endDate'] . '23:59:59') : 0;
+        $beginDateline =  isset($params['beginDate']) ? strtotime($params['beginDate'] . ' 00:00:00') : 0;
+        $endDateline =  isset($params['endDate']) ? strtotime($params['endDate'] . '23:59:59') : 0;
         if($endDateline && $beginDateline > $endDateline){
             throw new \Exception("开始日期不能晚于结束日期");
         }
