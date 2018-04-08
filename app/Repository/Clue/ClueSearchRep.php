@@ -66,7 +66,7 @@ class ClueSearchRep extends BaseRep
         if(isset($condition['orWhere']) && $condition['orWhere']){
             $query->where(function($query) use($condition){
                 foreach($condition['orWhere'] as $k => $v){
-                    $query->orWhere($k, $v);
+                    $query->orWhere($k, 'like', "%" . $v . "%");
                 }
             });
         }
@@ -92,6 +92,8 @@ class ClueSearchRep extends BaseRep
         }
 
         $condition['size'] = _isset($condition, 'size', PAGESIZE);
+
+        //debuger($query->toSql());
 
         $result = $query->paginate($condition['size'])->toArray();
 

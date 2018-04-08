@@ -177,6 +177,11 @@ class ClueService extends BaseService
             $data['clue_id'] = guid();
         }
 
+        // TODO 需要提交参数未上级交办，以便搜索
+        if(isset($data['supervisor']) && 1 == $data['supervisor']){
+            $data['supervisor'] = '上级交办';
+        }
+
         $this->clueRep->saveClue([$data]);
 
         return $data['clue_id'];

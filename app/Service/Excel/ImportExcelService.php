@@ -180,6 +180,9 @@ class ImportExcelService extends BaseService
         // 获取excel数据
         $excelData = $this->excelService->getExcelData($params);
 
+        // 过滤空数据
+        $excelData = array_filter($excelData);
+
         // 获取excel转换数据
         $excelData = $this->excelService->getConvertExcelData($excelData, $params);
 

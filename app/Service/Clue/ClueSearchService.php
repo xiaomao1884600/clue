@@ -170,6 +170,29 @@ class ClueSearchService extends BaseService
         return $index;
     }
 
+    protected function getKeyWordCondition(string $keyWord)
+    {
+        $condition = [];
+        $keyWord = trim($keyWord);
+        if(! $keyWord) return $condition;
+
+        $conditon =  [
+            'source' => $keyWord,
+            'number' => $keyWord,
+            'reflected_name' => $keyWord,
+            'company' => $keyWord,
+            'supervisor' => $keyWord
+
+        ];
+
+        // 检测是否上级交办搜索
+        if($keyWord == '上级交办'){
+            $conditon['supervisor'] = 1;
+        }
+
+        return $conditon;
+    }
+
     /**
      * 设置关键字查询条件
      * @param array $params
@@ -188,18 +211,9 @@ class ClueSearchService extends BaseService
         ];
 
         if($keyWord){
-            $conditon['orWhere'] =  [
-                'source' => $keyWord,
-                'number' => $keyWord,
-                'reflected_name' => $keyWord,
-                'company' => $keyWord,
-
-            ];
-            // 检测是否上级交办搜索
-            if($keyWord == '上级交办'){
-                $conditon['orWhere']['supervisor'] = 1;
-            }
+            $conditon['orWhere'] = $this->getKeyWordCondition($keyWord);
         }
+
 
         if ($orders) {
             foreach ($orders as $k => $v) {
@@ -220,7 +234,7 @@ class ClueSearchService extends BaseService
      */
     protected function setAdvancedSearchCondition(array $params)
     {
-        //$keyWord = trim(_isset($params, 'keyword'));
+        $keyWord = trim(_isset($params, 'keyword'));
 
         $index = _isset($params, 'index', '1');
         request()->offsetSet('page', $index);
@@ -229,6 +243,11 @@ class ClueSearchService extends BaseService
 
         // TODO 处理检索条件
         $conditon = [];
+
+        // 关键字搜索条件
+        if($keyWord){
+            $conditon['orWhere'] = $this->getKeyWordCondition($keyWord);
+        }
 
         // whereBetween条件
         if (_isset($params, 'entry_start_time')) {
