@@ -39,8 +39,8 @@ class DocumentRep extends BaseRep
     {
         $table = $this->documentModel->getTableName();
         $orders = isset($params['order']) ?: [];
-        $pagesize = isset($params['pagesize']) && $params['pagesize'] ?: 10;
-        $page = isset($params['page']) && $params['page'] ?: 1;
+        $pagesize = (isset($params['pagesize']) && $params['pagesize']) ? $params['pagesize'] : 10;
+        $page = (isset($params['page']) && $params['page']) ? $params['page'] : 1;
         $query = $this->documentModel
             ->select('*');
         if(isset($params['document_user']) && $params['document_user']){

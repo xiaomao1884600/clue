@@ -229,8 +229,8 @@ class ClueRep extends BaseRep
     public function getOverdueRemind(array $data)
     {
         $table = $this->clue->getTableName();
-        $pagesize = isset($data['pagesize']) && $data['pagesize'] ?: 5;
-        $page = isset($data['page']) && $data['page'] ?: 1;
+        $pagesize = (isset($data['pagesize']) && $data['pagesize']) ? $data['pagesize'] : 10;
+        $page = (isset($data['page']) && $data['page']) ? $data['page'] : 1;
         $query = $this->clue
             ->select($table . '.clue_id', $table . '.source', $table . '.number', $table . '.reflected_name',
                 $table . '.closed_time', $table . '.remind_days', $table . '.remind_days');
