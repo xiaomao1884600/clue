@@ -77,6 +77,7 @@ class ExcelService extends BaseService
         foreach($excelData as $key => $value){
             if(! $value) continue;
             foreach($value as $k => $v){
+                $k = strtolower($k);
                 // 标题规则
                 $nk = $titleRule[$k] ?? '';
                 if(! $nk) continue;
@@ -88,6 +89,7 @@ class ExcelService extends BaseService
                 $newData[$key][$nk] = $v;
             }
         }
+
         unset($excelData);
         return $newData;
     }

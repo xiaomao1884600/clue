@@ -73,6 +73,10 @@ class CaseUploadService extends BaseService
         // 处理失败信息
         $failedData = $this->importExcelService->setFailedData($excelData, $error, $params);
 
+        array_walk($excelData, function(& $value){
+            $value['case_clue_id'] = guid();
+        });
+
         // 处理案件线索数据保存
         $this->caseRep->saveCaseClue($excelData);
 
@@ -127,6 +131,10 @@ class CaseUploadService extends BaseService
 
         // 处理失败信息
         $failedData = $this->importExcelService->setFailedData($excelData, $error, $params);
+
+        array_walk($excelData, function(& $value){
+            $value['id'] = guid();
+        });
 
         // TODO 立案是否每次覆盖式导入
 

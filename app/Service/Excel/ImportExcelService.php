@@ -71,21 +71,22 @@ class ImportExcelService extends BaseService
         if(! $result) return $result;
 
         foreach($result as $key => $value){
-            $data['title_rule'][$value['title']] = $value['field'];
+            $title = strtolower($value['title']);
+            $data['title_rule'][$title] = $value['field'];
 
             // 字段类型
             if($value['field_type']){
-                $data['type_rule'][$value['title']] = $value['field_type'];
+                $data['type_rule'][$title] = $value['field_type'];
             }
 
             // 字典
             if($value['field_dic']){
-                $data['dic_rule'][$value['title']] = $value['field_dic'];
+                $data['dic_rule'][$title] = $value['field_dic'];
             }
 
             // 必填
             if($value['field_required']){
-                $data['required_rule'][$value['title']] = $value['field'];
+                $data['required_rule'][$title] = $value['field'];
             }
         }
 
