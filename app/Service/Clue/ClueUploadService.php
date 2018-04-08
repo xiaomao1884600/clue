@@ -10,6 +10,7 @@ namespace App\Service\Clue;
 
 
 use App\Model\Clue\ExcelConfig;
+use App\Repository\Clue\ClueRep;
 use App\Repository\Clue\FileRep;
 use App\Repository\Clue\ImportRep;
 use App\Service\Excel\ImportExcelService;
@@ -36,6 +37,10 @@ class ClueUploadService extends BaseService
 
     protected $importExcelService;
 
+    protected $clueRep;
+
+    protected $clueDic;
+
     protected $attachmentsField = [
         'attachment_type' => 'attachment_type',
         'newFileName' => 'filename',
@@ -49,7 +54,9 @@ class ClueUploadService extends BaseService
         UploadService $uploadService,
         FileRep $fileRep,
         ClueService $clueService,
-        ImportExcelService $importExcelService
+        ImportExcelService $importExcelService,
+        ClueRep $clueRep,
+        ClueDic $clueDic
     )
     {
         parent::__construct();
@@ -58,6 +65,8 @@ class ClueUploadService extends BaseService
         $this->fileRep = $fileRep;
         $this->clueService = $clueService;
         $this->importExcelService = $importExcelService;
+        $this->clueRep = $clueRep;
+        $this->clueDic = $clueDic;
     }
 
     /**
@@ -175,6 +184,7 @@ class ClueUploadService extends BaseService
         $result = [];
         $error = [];
         $requiredRule = $params['ruleInfo']['required_rule'] ?? [];
+        $dicField = isset($params['ruleInfo']['dic_rule']) ? array_values($params['ruleInfo']['dic_rule']) : [];
 
         // 检测必填项
         $error = $this->importExcelService->verifyRequired($excelData, $requiredRule, $error);
@@ -185,6 +195,9 @@ class ClueUploadService extends BaseService
         // 处理失败信息
         $failedData = $this->importExcelService->setFailedData($excelData, $error, $params);
 
+        // 线索字典入库转换
+        $excelData = $this->clueDic->convertDic($excelData, $dicField, 1);
+        
         // 处理线索数据保存
         $this->clueService->saveExcelClue($excelData);
 
@@ -196,13 +209,31 @@ class ClueUploadService extends BaseService
 
     }
 
+    /**
+     * 清除编号重复线索
+     * @param array $data
+     * @return array
+     */
     protected function clearVerifyClueNumber(array $data)
     {
         $condition = [];
 
         $condition['number'] = array_column($data, 'number');
 
-        $result = $this->clueService->clearClueByNumber($condition);
+        // 获取线索数据
+        $clueInfo = $this->clueService->checkClueByNumber($condition);
+
+        if(! $clueInfo) return [];
+
+        $clueId = $clueInfo ? array_column($clueInfo, 'clue_id') : [];
+
+        $delCondition = ['clue_id' => $clueId];
+
+        // 清除线索
+        $result = $this->clueRep->deleteClue($delCondition);
+
+        // 清除线索详情
+        $result = $this->clueRep->deleteClueDetail($delCondition);
 
         return $data;
     }

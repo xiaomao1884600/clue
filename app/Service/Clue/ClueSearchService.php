@@ -43,6 +43,16 @@ class ClueSearchService extends BaseService
         ],
     ];
 
+    /**
+     * 线索字典
+     * @var array
+     */
+    protected $clueDicField = [
+        'source',
+        'disposal_type',
+        'clue_state',
+        'supervisor',
+    ];
 
     protected $caseClueField = [
         'pk_id',
