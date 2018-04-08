@@ -189,4 +189,20 @@ class ClueController extends Controller
             return ApiExceptions::handle($exception);
         }
     }
+    
+    /**
+     * 超期提醒总数
+     * 
+     * @param Request $request
+     * @param ClueService $clueService
+     * @return type
+     */
+    public function remindTotal(Request $request, ClueService $clueService)
+    {
+        try {
+            return Message::success($clueService->remindTotal(requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
+    }
 }

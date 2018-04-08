@@ -226,21 +226,16 @@ class ClueRep extends BaseRep
      * @param array $data
      * @return type
      */
-    public function getOverdueRemind(array $data)
+    public function getOverdueRemind(array $pk_ids)
     {
         $table = $this->clue->getTableName();
-        $pagesize = (isset($data['pagesize']) && $data['pagesize']) ? $data['pagesize'] : 10;
-        $page = (isset($data['page']) && $data['page']) ? $data['page'] : 1;
         $query = $this->clue
-            ->select($table . '.clue_id', $table . '.source', $table . '.number', $table . '.reflected_name',
-                $table . '.closed_time', $table . '.remind_days', $table . '.remind_days');
-        $query->orderBy($table . '.remind_days');
+            ->select($table . '.clue_id', $table . '.pk_id', $table . '.source', $table . '.number', $table . '.reflected_name',
+                $table . '.closed_time');
+        $query->whereIn($table . '.pk_id', $pk_ids);
         $query->orderBy($table . '.closed_time');
-        $total = $query->count();
-        $query->take($pagesize);
-        $query->skip(($page - 1) * $pagesize);
         $query = $query->get();
-        return $query && count($query) ? ['data' => $query->toArray(), 'total' => $total] : ['data' => [], 'total' => 0];
+        return $query && count($query) ? $query->toArray() : [];
     }
 
     /**
@@ -323,5 +318,21 @@ class ClueRep extends BaseRep
             ->delete();
 
         return $result;
+    }
+    
+    /**
+     * 超期提醒数据
+     * 
+     * @param array $data
+     * @return type
+     */
+    public function getRemindTotal(array $data)
+    {
+        $table = $this->clue->getTableName();
+        $query = $this->clue
+            ->select($table . '.pk_id', $table . '.clue_id', $table . '.closed_time', $table . '.remind_days');
+        $query->where($table . '.clue_state', '<>', 1);
+        $query = $query->get();
+        return $query && count($query) ? $query->toArray() : [];
     }
 }

@@ -81,6 +81,9 @@ Route::group(['middleware' => []], function(){
         
         // 线索超期提醒
         Route::any('overdue', 'ClueController@overdueRemind');
+        
+        // 线索超期提醒个数
+        Route::any('remindtotal', 'ClueController@remindTotal');
 
 //        // 导入线索excel
 //        Route::any('import_clue_excel', 'UploadController@importClueExcel');
