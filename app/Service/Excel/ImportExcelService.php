@@ -231,7 +231,7 @@ class ImportExcelService extends BaseService
         foreach($data as $key => $value){
             foreach($value as $field => $v){
                 if(isset($requiredRule[$field]) && ! $v){
-                    $error[$key][$field] = "【" . $requiredRule[$field] . '】必填';
+                    $error[$key][] = "【" . $requiredRule[$field] . '】必填';
                 }
             }
         }

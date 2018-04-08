@@ -122,6 +122,8 @@ class ClueSearchService extends BaseService
         
         if (!$condition) return [];
 
+        $condition['size'] = _isset($params, 'size', PAGESIZE);
+
         // 查询线索信息
         $result = $this->getClueKeyWordSearch($condition);
 
@@ -148,6 +150,8 @@ class ClueSearchService extends BaseService
         $condition = $this->setAdvancedSearchCondition($params);
 
         if (!$condition) return [];
+
+        $condition['size'] = _isset($params, 'size', PAGESIZE);
 
         // 查询线索信息
         $result = $this->getClueKeyWordSearch($condition);
@@ -185,10 +189,10 @@ class ClueSearchService extends BaseService
 
         ];
 
-        // 检测是否上级交办搜索
-        if($keyWord == '上级交办'){
-            $conditon['supervisor'] = 1;
-        }
+//        // 检测是否上级交办搜索
+//        if($keyWord == '上级交办'){
+//            $conditon['supervisor'] = 1;
+//        }
 
         return $conditon;
     }

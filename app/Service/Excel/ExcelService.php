@@ -32,9 +32,6 @@ class ExcelService extends BaseService
             // 设置日期默认格式
             $reader->setDateFormat('Y-m-d H:i:s');
 
-            // 过滤空行
-            $reader->ignoreEmpty();
-
             $excelData = $reader->get()->toArray();
             return $excelData;
         });
