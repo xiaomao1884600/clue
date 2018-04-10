@@ -134,3 +134,10 @@ Route::group(['namespace' => 'Clue', 'prefix' => 'excel'], function(){
     Route::any('import_filing', 'UploadController@importFilingExcel');
 
 });
+/**
+ * 案件相关
+ */
+Route::group(['namespace' => 'Cases', 'prefix' => 'cases'], function(){
+    // 获取案件列表
+    Route::any('list', 'CasesController@getCaseList');
+});

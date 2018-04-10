@@ -46,4 +46,28 @@ class CaseRep extends BaseRep
     {
         return $this->filing->insertUpdateBatch($data);
     }
+    
+    public function getCaseListRep($params = [], $mark = false)
+    {
+        $table = $this->filing->getTableName();
+        $pagesize = (isset($params['pagesize']) && $params['pagesize']) ? $params['pagesize'] : 10;
+        $page = (isset($params['page']) && $params['page']) ? $params['page'] : 1;
+        
+        $query = $this->filing
+            ->select('*');
+        if(isset($params['reflected_name']) && $params['reflected_name']){
+            
+            $query->where($table.'.reflected_name', '=', $params['reflected_name']);
+        }
+        if($mark){
+            $query = $query->get();
+            return $query && count($query) ? $query->toArray() : [];
+        }else{
+            $total = $query->count();
+            $query->take($pagesize);
+            $query->skip(($page - 1) * $pagesize);
+            $query = $query->get();
+            return $query && count($query) ? ['data' => $query->toArray(), 'total' => $total] : ['data' => [], 'total' => 0];
+        }
+    }
 }
