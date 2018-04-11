@@ -22,6 +22,13 @@ class CasesController extends Controller
 
     }
     
+    /**
+     * 立案案件登记列表、详情
+     * 
+     * @param Request $request
+     * @param CaseService $caseService
+     * @return type
+     */
     public function getCaseList(Request $request, CaseService $caseService)
     {
         try {

@@ -16,6 +16,7 @@ use App\Service\Clue\ClueUploadService;
 use App\Service\Exceptions\ApiExceptions;
 use App\Service\Exceptions\Message;
 use Illuminate\Http\Request;
+use App\Service\Cases\ProblemCluesService;
 
 class ClueController extends Controller
 {
@@ -201,6 +202,21 @@ class ClueController extends Controller
     {
         try {
             return Message::success($clueService->remindTotal(requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
+    }
+    
+    /**
+     * 问题线索处置情况列表、详情
+     * 
+     * @param Request $request
+     * @param ProblemCluesService $problemCluesService
+     */
+    public function problemCluesList(Request $request, ProblemCluesService $problemCluesService)
+    {
+        try {
+            return Message::success($problemCluesService->getProblemList(requestData($request)));
         } catch (\Exception $exception) {
             return ApiExceptions::handle($exception);
         }

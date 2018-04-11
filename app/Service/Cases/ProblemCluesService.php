@@ -1,18 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: wangwujun
- * Date: 2018/4/7
- * Time: 下午10:46
- */
-
 namespace App\Service\Cases;
 
 
 use App\Service\Foundation\BaseService;
 use App\Repository\Cases\CaseRep;
 
-class CaseService extends BaseService
+class ProblemCluesService extends BaseService
 {
     public function __construct(CaseRep $caseRep)
     {
@@ -21,23 +14,23 @@ class CaseService extends BaseService
     }
     
     /**
-     * 立案案件登记列表、详情
+     * 获取问题线索处置情况数据
      * 
      * @param type $params
      * @return type
      */
-    public function getCaseListService($params = [])
+    public function getProblemList($params = [])
     {
         $mark = false;
-        if(isset($params['case_num']) && $params['case_num']){
+        if(isset($params['clue_number']) && $params['clue_number']){
             $mark = true;
         }
-        $rowData = $this->caseRep->getCaseListRep($params, $mark);
+        $rowData = $this->caseRep->getProblemListRep($params, $mark);
         //如果是根据被反映人获取的数据，则对数据进行分页签处理
         if($mark === false){
             return $rowData;
         }else{
-            return $this->processDataArr($rowData);
+            return $this->processListArr($rowData);
         }
     }
     
@@ -47,7 +40,7 @@ class CaseService extends BaseService
      * @param type $rowData
      * @return array
      */
-    public function processDataArr($rowData)
+    public function processListArr($rowData)
     {
         return $rowData;
         if(empty($rowData)) return [];

@@ -47,17 +47,55 @@ class CaseRep extends BaseRep
         return $this->filing->insertUpdateBatch($data);
     }
     
+    /**
+     * 立案案件登记数据获取
+     * 
+     * @param type $params
+     * @param type $mark
+     * @return type
+     */
     public function getCaseListRep($params = [], $mark = false)
     {
         $table = $this->filing->getTableName();
         $pagesize = (isset($params['pagesize']) && $params['pagesize']) ? $params['pagesize'] : 10;
         $page = (isset($params['page']) && $params['page']) ? $params['page'] : 1;
-        
+        $column = !$mark ? ['dw_code', 'dw_title', 'case_num', 'case_user_num', 'reflected_name', 'gender'] : '*';
         $query = $this->filing
-            ->select('*');
-        if(isset($params['reflected_name']) && $params['reflected_name']){
+            ->select($column);
+        if(isset($params['case_num']) && $params['case_num']){
             
-            $query->where($table.'.reflected_name', '=', $params['reflected_name']);
+            $query->where($table.'.case_num', '=', $params['case_num']);
+        }
+        if($mark){
+            $query = $query->get();
+            return $query && count($query) ? $query->toArray() : [];
+        }else{
+            $total = $query->count();
+            $query->take($pagesize);
+            $query->skip(($page - 1) * $pagesize);
+            $query = $query->get();
+            return $query && count($query) ? ['data' => $query->toArray(), 'total' => $total] : ['data' => [], 'total' => 0];
+        }
+    }
+    
+    /**
+     * 问题线索处置情况数据获取
+     * 
+     * @param type $params
+     * @param type $mark
+     * @return type
+     */
+    public function getProblemListRep($params = [], $mark = false)
+    {
+        $table = $this->caseClue->getTableName();
+        $pagesize = (isset($params['pagesize']) && $params['pagesize']) ? $params['pagesize'] : 10;
+        $page = (isset($params['page']) && $params['page']) ? $params['page'] : 1;
+        $column = !$mark ? ['clue_source', 'clue_number', 'user_number', 'clue_agency'] : '*';
+        $query = $this->caseClue
+            ->select($column);
+        if(isset($params['clue_number']) && $params['clue_number']){
+            
+            $query->where($table.'.clue_number', '=', $params['clue_number']);
         }
         if($mark){
             $query = $query->get();

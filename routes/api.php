@@ -90,6 +90,9 @@ Route::group(['middleware' => []], function(){
 
         // 结办线索
         Route::any('set_clue_closed', 'ClueController@setClueClosed');
+        
+        // 问题线索处置情况列表、详情
+        Route::any('problem_clues_list', 'ClueController@problemCluesList');
 
     });
 
@@ -116,7 +119,7 @@ Route::group(['middleware' => []], function(){
 });
 
 Route::group(['namespace' => 'Foundation', 'prefix' => 'dic'], function(){
-    // 上传线索附件
+    // 字典
     Route::any('getdic', 'DicController@dicList');
 });
 
@@ -134,6 +137,7 @@ Route::group(['namespace' => 'Clue', 'prefix' => 'excel'], function(){
     Route::any('import_filing', 'UploadController@importFilingExcel');
 
 });
+
 /**
  * 案件相关
  */
