@@ -60,4 +60,42 @@ class DicService extends BaseService
         }
         return $return;
     }
+
+    /**
+     * 获取字典关键字
+     * @param string $key
+     * @return type|array
+     */
+    public function getDicInfo(string $key = '')
+    {
+        $df = [];
+
+        $dicInfo = $this->getDicList();
+
+        if($key){
+            $df = $this->getDic($dicInfo, $key);
+        }else{
+            $df = $dicInfo;
+        }
+
+        return $df;
+    }
+
+    /**
+     * 获取字典
+     * @param array $dicInfo
+     * @param string $key
+     * @param int $type ，为1 时，则获取title对应字典
+     * @return array
+     */
+    public function getDic(array $dicInfo, string $key, $type = 0)
+    {
+        if($type){
+            $dic = isset($dicInfo[$key]['data']) ? array_column($dicInfo[$key]['data'], 'code', 'title') : [];
+        }else{
+            $dic = isset($dicInfo[$key]['data']) ? array_column($dicInfo[$key]['data'], 'title', 'code') : [];
+        }
+
+        return $dic;
+    }
 }

@@ -145,3 +145,11 @@ Route::group(['namespace' => 'Cases', 'prefix' => 'cases'], function(){
     // 获取案件列表
     Route::any('list', 'CasesController@getCaseList');
 });
+
+/**
+ * 系统信息
+ */
+Route::group(['namespace' => 'System', 'prefix' => 'system'], function(){
+    // 获取cpu信息
+    Route::any('get_cpu', 'ShellController@getCpu');
+});

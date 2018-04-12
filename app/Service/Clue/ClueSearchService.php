@@ -185,6 +185,10 @@ class ClueSearchService extends BaseService
             'number' => $keyWord,
             'reflected_name' => $keyWord,
             'company' => $keyWord,
+            'post' => $keyWord,
+            'level' => $keyWord,
+            'disposal_type' => $keyWord,
+            'clue_next' => $keyWord,
             'supervisor' => $keyWord
 
         ];
@@ -247,7 +251,7 @@ class ClueSearchService extends BaseService
 
         // TODO 处理检索条件
         $conditon = [];
-
+        $conditon['orWhere'] = [];
         // 关键字搜索条件
         if($keyWord){
             $conditon['orWhere'] = $this->getKeyWordCondition($keyWord);
@@ -261,22 +265,22 @@ class ClueSearchService extends BaseService
 
         // 线索来源
         if (_isset($params, 'source')) {
-            $conditon['where'][] = ['field' => 'source', 'operator' => '=', 'value' => _isset($params, 'source')];
+            $conditon['where'][] = ['field' => 'source', 'operator' => 'like', 'value' => "%" . _isset($params, 'source') . "%"];
         }
 
         // 单位
         if (_isset($params, 'company')) {
-            $conditon['where'][] = ['field' => 'company', 'operator' => '=', 'value' => _isset($params, 'company')];
+            $conditon['where'][] = ['field' => 'company', 'operator' => 'like', 'value' => "%" . _isset($params, 'company') . "%"];
         }
 
         // 级别
         if (_isset($params, 'level')) {
-            $conditon['where'][] = ['field' => 'level', 'operator' => '=', 'value' => _isset($params, 'level')];
+            $conditon['where'][] = ['field' => 'level', 'operator' => 'like', 'value' => "%" . _isset($params, 'level') . "%"];
         }
 
         // 职位
         if (_isset($params, 'post')) {
-            $conditon['where'][] = ['field' => 'post', 'operator' => '=', 'value' => _isset($params, 'post')];
+            $conditon['where'][] = ['field' => 'post', 'operator' => 'like', 'value' => "%" . _isset($params, 'post') . "%"];
         }
 
         // 状态

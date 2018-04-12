@@ -11,11 +11,14 @@ namespace App\Service\Clue;
 
 use App\Repository\Clue\ClueRep;
 use App\Service\Foundation\BaseService;
+use App\Service\Foundation\DicService;
 use Illuminate\Support\Facades\Storage;
 
 class ClueService extends BaseService
 {
     protected $clueRep;
+
+    protected $dicService;
 
     /**
      * 线索字段
@@ -96,11 +99,13 @@ class ClueService extends BaseService
     ];
 
     public function __construct(
-        ClueRep $clueRep
+        ClueRep $clueRep,
+        DicService $dicService
     )
     {
         parent::__construct();
         $this->clueRep = $clueRep;
+        $this->dicService = $dicService;
     }
 
     public function saveClue(array $params)
@@ -444,13 +449,31 @@ class ClueService extends BaseService
      */
     public function setClueClosed(array $params)
     {
+        $stateDic = $this->dicService->getDicInfo('clue_state');
+
         $result = [];
         $clueId = $this->checkRequestClueId($params);
 
-        $condition = ['clue_id' => $clueId];
+        // 查询线索信息
+        $clueInfo = $this->clueRep->getClueByClueId(['clue_id' => $clueId]);
+
+        // 当前线索状态
+        $clueLastState = $clueInfo['clue_state'] ?? '';
+
+        // 更改线索状态
+        $clueState = $stateDic[3] ?? '已结';
+
+        $condition = [
+            'clue_id' => $clueId,
+            'update' =>
+                [
+                    'clue_last_state' => $clueLastState,
+                    'clue_state' => $clueState
+                ],
+        ];
 
         $result = $this->clueRep->setClueClosed($condition);
-        return ['result' => true];
+        return ['result' => true, 'clue_state' => $clueState];
     }
 
     /**

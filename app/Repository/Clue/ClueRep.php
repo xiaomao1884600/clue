@@ -294,10 +294,11 @@ class ClueRep extends BaseRep
     {
         $clueId = _isset($condition, 'clue_id');
         $clueId = convertToArray($clueId);
-        if(! $clueId) return [];
+        $update = $condition['update'] ?? [];
+        if(! $clueId || ! $update) return [];
         return $this->clue
             ->whereIn('clue_id', $clueId)
-            ->update(['clue_state' => 1]);
+            ->update($update);
     }
 
     /**
