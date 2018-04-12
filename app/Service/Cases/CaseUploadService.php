@@ -75,6 +75,7 @@ class CaseUploadService extends BaseService
 
         array_walk($excelData, function(& $value){
             $value['case_clue_id'] = guid();
+            $value['op_type'] = 1;
         });
 
         // 处理案件线索数据保存
@@ -134,6 +135,7 @@ class CaseUploadService extends BaseService
 
         array_walk($excelData, function(& $value){
             $value['id'] = guid();
+            $value['op_type'] = 1;
         });
 
         // TODO 立案是否每次覆盖式导入

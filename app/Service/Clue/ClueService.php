@@ -39,6 +39,7 @@ class ClueService extends BaseService
         'remind_days' => 'remind_days',
         'clue_next' => 'clue_next',
         'clue_state' => 'clue_state',
+        'op_type' => 'op_type',
 
     ];
 
