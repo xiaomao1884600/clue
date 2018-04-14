@@ -112,7 +112,7 @@ class ClueSearchRep extends BaseRep
         if(! $reflectedName) return [];
 
         $result = $this->document
-                ->where('username', $reflectedName)
+                ->where('username','like', "%" . $reflectedName . "%")
                 ->orderBy('document_date', 'DESC')
                 ->paginate($size)
                 ->toArray();
@@ -132,7 +132,7 @@ class ClueSearchRep extends BaseRep
         if(! $reflectedName) return [];
 
         $result = $this->caseClue
-            ->where('reflected_name', $reflectedName)
+            ->where('reflected_name', 'like',"%" . $reflectedName . "%")
             ->orderBy('clue_accept_time', 'DESC')
             ->paginate($size)
             ->toArray();
@@ -152,7 +152,7 @@ class ClueSearchRep extends BaseRep
         if(! $reflectedName) return [];
         // TODO 后期改为立案的数据
         $result = $this->filing
-            ->where('reflected_name', $reflectedName)
+            ->where('reflected_name', 'like', "%" . $reflectedName . "%")
             ->orderBy('trial_accept_time', 'DESC')
             ->paginate($size)
             ->toArray();

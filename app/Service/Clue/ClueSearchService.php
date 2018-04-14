@@ -380,7 +380,7 @@ class ClueSearchService extends BaseService
         $condition = [];
         $condition = [
             'where' => [
-                ['field' => 'reflected_name', 'operator' => '=', 'value' => $params['reflected_name']],
+                ['field' => 'reflected_name', 'operator' => 'like', 'value' => "%" . $params['reflected_name'] . "%"],
             ],
             'orderBy' => [
                 ['field' => 'entry_time', 'order' => self::ORDER_TYPE[self::ORDER_DESC]],
