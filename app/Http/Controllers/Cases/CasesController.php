@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace App\Http\Controllers\CaseS;
+namespace App\Http\Controllers\Cases;
 
 
 use App\Http\Controllers\Controller;
@@ -32,7 +32,7 @@ class CasesController extends Controller
     public function getCaseList(Request $request, CaseService $caseService)
     {
         try {
-            return Message::success($caseService->getCaseListService($request, requestData($request)));
+            return Message::success($caseService->getCaseListService(requestData($request)));
         } catch (\Exception $exception) {
             return ApiExceptions::handle($exception);
         }
