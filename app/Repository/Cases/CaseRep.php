@@ -59,7 +59,7 @@ class CaseRep extends BaseRep
         $table = $this->filing->getTableName();
         $pagesize = (isset($params['pagesize']) && $params['pagesize']) ? $params['pagesize'] : 10;
         $page = (isset($params['page']) && $params['page']) ? $params['page'] : 1;
-        $column = !$mark ? ['dw_code', 'dw_title', 'case_num', 'case_user_num', 'reflected_name', 'gender'] : '*';
+        $column = !$mark ? ['case_source', 'case_num', 'reflected_name', 'company', 'level', 'gender'] : '*';
         $query = $this->filing
             ->select($column);
         if(isset($params['case_num']) && $params['case_num']){

@@ -10,7 +10,7 @@ namespace App\Http\Controllers\Clue;
 
 
 use App\Http\Controllers\Controller;
-use App\Service\CaseS\CaseUploadService;
+use App\Service\Cases\CaseUploadService;
 use App\Service\Clue\ClueUploadService;
 use App\Service\Exceptions\ApiExceptions;
 use App\Service\Exceptions\Message;

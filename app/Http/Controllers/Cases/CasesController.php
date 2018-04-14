@@ -13,7 +13,7 @@ use App\Http\Controllers\Controller;
 use App\Service\Exceptions\ApiExceptions;
 use App\Service\Exceptions\Message;
 use Illuminate\Http\Request;
-use App\Service\CaseS\CaseService;
+use App\Service\Cases\CaseService;
 
 class CasesController extends Controller
 {

@@ -5,7 +5,7 @@
  * Date: 2018/4/7
  * Time: 下午10:37
  */
-namespace App\Service\CaseS;
+namespace App\Service\Cases;
 
 use App\Model\Clue\ExcelConfig;
 use App\Repository\Cases\CaseRep;
