@@ -42,44 +42,29 @@ class ProblemCluesService extends BaseService
      */
     public function processListArr($rowData)
     {
-        return $rowData;
         if(empty($rowData)) return [];
         $res = [];
         //案件基础数据及页签名称，详情detail,两规两指情况sheet,立案情况sheet2,违纪违法行为sheet3,审理情况sheet4,结案情况sheet5,公检法等处理情况sheet6,线索情况sheet7,线索文书sheet8
         foreach ($rowData as $val){
             $res['detail'] = [
-                'is_dw' => $val['is_dw'], 'reflected_name' => $val['reflected_name'], 'gender' => $val['gender'],
-                'nation' => $val['nation'], 'year_of_birth' => $val['year_of_birth'], 'age' => $val['age'],
-                'political' => $val['political'], 'party_time' => $val['party_time'], 'education' => $val['education'],
-                'company' => $val['company'], 'is_dw' => $val['is_dw'], 'is_dw' => $val['is_dw'],
-                'is_dw' => $val['is_dw'], 'is_dw' => $val['is_dw'], 'is_dw' => $val['is_dw'],
-                'is_dw' => $val['is_dw'], 'is_dw' => $val['is_dw'], 'is_dw' => $val['is_dw'],
-                'is_dw' => $val['is_dw'], 'is_dw' => $val['is_dw'], 'is_dw' => $val['is_dw'],
-                'is_dw' => $val['is_dw'], 'is_dw' => $val['is_dw'], 'is_dw' => $val['is_dw'],
+                'units_event' => $val['units_event'], 'reflected_name' => $val['reflected_name'], 'gender' => $val['gender'],
+                'nation' => $val['nation'], 'birthday' => $val['birthday'], 'political' => $val['political'], 'political_2' => $val['political_2'],
+                'join_party_time' => $val['join_party_time'], 'education' => $val['education'], 'company' => $val['company'],
+                'level' => $val['level'], 'cadre_auth' => $val['cadre_auth'], 'join_company_time' => $val['join_company_time'],
+                'npc_member' => $val['npc_member'], 'cppcc_member' => $val['cppcc_member'], 'servant' => $val['servant'],
+                'supervision' => $val['supervision'], 'department' => $val['department'], 'enterprise_nature' => $val['enterprise_nature'],
+                'enterprise_level' => $val['enterprise_level'], 'station' => $val['station'], 'enterprise_persion_level' => $val['enterprise_persion_level'],
+                'leader_violate' => $val['leader_violate']
             ];
-            $res['sheet'] = [
-                
+            $res['sheet'] = [//线索情况
+                'clue_number' => $val['clue_number'], 'user_number' => $val['user_number'], 'clue_accept_time' => $val['clue_accept_time'],
+                'clue_agency' => $val['clue_agency'], 'clue_verify' => $val['clue_verify'], 'clue_source' => $val['clue_source'],
+                'clue_violate' => $val['clue_violate'], 'clue_involve_law' => $val['clue_involve_law'], 'clue_disposal_type' => $val['clue_disposal_type'],
+                'clue_disposal_type_2' => $val['clue_disposal_type_2'], 'clue_measures' => $val['clue_measures'], 'clue_collection_money' => $val['clue_collection_money'],
+                'clue_redeem_money' => $val['clue_redeem_money']
             ];
-            $res['sheet2'] = [
-                
-            ];
-            $res['sheet3'] = [
-                
-            ];
-            $res['sheet4'] = [
-                
-            ];
-            $res['sheet5'] = [
-                
-            ];
-            $res['sheet6'] = [
-                
-            ];
-            $res['sheet7'] = [
-                
-            ];
-            $res['sheet8'] = [
-                
+            $res['sheet2'] = [//线索文书
+                'document_main_content' => $val['document_main_content'], 'document_disposal_report' => $val['document_disposal_report'], 'document_remark' => $val['document_remark']
             ];
         }
         return $res;

@@ -90,7 +90,7 @@ class CaseRep extends BaseRep
         $table = $this->caseClue->getTableName();
         $pagesize = (isset($params['pagesize']) && $params['pagesize']) ? $params['pagesize'] : 10;
         $page = (isset($params['page']) && $params['page']) ? $params['page'] : 1;
-        $column = !$mark ? ['clue_source', 'clue_number', 'user_number', 'clue_agency'] : '*';
+        $column = !$mark ? ['clue_source', 'clue_number', 'reflected_name', 'company', 'level', 'clue_disposal_type', 'clue_disposal_type_2'] : '*';
         $query = $this->caseClue
             ->select($column);
         if(isset($params['clue_number']) && $params['clue_number']){
