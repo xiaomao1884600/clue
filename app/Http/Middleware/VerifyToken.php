@@ -23,6 +23,13 @@ class VerifyToken
         error_reporting(E_ALL & ~ E_NOTICE);
         // 检测token
         try{
+
+            // 测试环境不检测
+            $appEnv = $_ENV['APP_ENV'] ?? '';
+            if('dev' == $appEnv){
+                return $next($request);
+            }
+
             $token = $request['token'] ?? '';
             if(! $token){
                 throw new \Exception('not have access !', 1005);

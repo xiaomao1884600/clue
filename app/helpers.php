@@ -1073,3 +1073,24 @@ if(! function_exists('_isset'))
         return isset($data[$field]) && $data[$field] ? $data[$field] : $default;
     }
 }
+
+if (! function_exists('filterArrayEmptyItem'))
+{
+    /**
+     * 过滤数组空元素
+     * @param type $arr
+     * @param type $newArr
+     * @return type
+     */
+    function filterArrayEmptyItem (&$arr)
+    {
+        if (! $arr) return [];
+        foreach ($arr as $key => &$val) {
+            if (is_array($val)) {
+                filterArrayEmptyItem($val);
+            } else if (!$val) {
+                unset($arr[$key]);
+            }
+        }
+    }
+}

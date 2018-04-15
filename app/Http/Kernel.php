@@ -60,5 +60,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verify_token' => \App\Http\Middleware\VerifyToken::class,
         'cors' => \App\Http\Middleware\VerifyCorsMiddleware::class,
+        'verify_secretkey' => \App\Http\Middleware\VerifySecretKey::class,
     ];
 }
