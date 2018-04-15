@@ -71,7 +71,7 @@ class CaseService extends BaseService
             $res['sheet2'] = [//立案情况
                 'case_num' => $val['case_num'], 'case_user_num' => $val['case_user_num'], 'filing_time' => $val['filing_time'],
                 'case_source' => $val['case_source'], 'first_violation_time' => $val['first_violation_time'], 'end_violation_time' => $val['end_violation_time'],
-                'other_process_time' => $val['other_process_time'], 'survey_end_time' => $val['survey_end_time'],
+                'other_process_time' => $val['other_process_time'], 'survey_end_time' => $val['survey_end_time'], 'filing_office' => $val['filing_office'],
                 'brief_case' => $val['brief_case'], 'filing_report' => $val['filing_report'], 'filing_decision' => $val['filing_decision'],
                 'survey_report' => $val['survey_report'], 'memo' => $val['memo']
             ];
