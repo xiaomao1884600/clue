@@ -56,8 +56,10 @@ class DocumentRep extends BaseRep
             $query->where($table.'.document_date', '<=', $params['end']);
         }
         if(!empty($orders)){
+            //防止参数错传，获取表结构进行验证
+            $tableRows = $this->documentModel->getTableDesc($table);
             foreach ($orders as $c => $o){
-                if($o == 0)
+                if($o == 0 && array_key_exists($c, $tableRows))
                     $query->orderBy($table.'.'.$c, 'DESC');
             }
         }
