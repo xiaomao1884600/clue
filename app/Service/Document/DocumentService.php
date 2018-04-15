@@ -170,4 +170,23 @@ class DocumentService extends BaseService
             });
         })->export('xls');
     }
+
+    /**
+     * 公文详情
+     * @param array $params
+     * @return array|mixed
+     * @throws \Exception
+     */
+    public function documentView(array $params)
+    {
+        $id = _isset($params, 'id');
+
+        if(! $id){
+            throw new \Exception('id required !');
+        }
+
+        $result = $this->dRep->getDocumentById(['id' => $id]);
+        $result = $result ? current($result) : [];
+        return $result;
+    }
 }

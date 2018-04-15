@@ -114,6 +114,8 @@ Route::group(['middleware' => []], function(){
         Route::any('save', 'DocumentController@save');
         //公文列表
         Route::any('list', 'DocumentController@documentList');
+        // 详情
+        Route::any('view', 'DocumentController@documentView');
     });
 
 });

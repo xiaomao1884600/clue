@@ -69,4 +69,22 @@ class DocumentRep extends BaseRep
         $query = $query->get();
         return $query && count($query) ? ['data' => $query->toArray(), 'total' => $total] : ['data' => [], 'total' => 0];
     }
+
+    /**
+     * 公文详情
+     * @param array $condition
+     * @return array
+     */
+    public function getDocumentById(array $condition)
+    {
+        $id = _isset($condition, 'id');
+        if(! $id) return [];
+
+        $result = $this->documentModel
+            ->where('id',$id)
+            ->get()
+            ->toArray();
+
+        return $result;
+    }
 }
