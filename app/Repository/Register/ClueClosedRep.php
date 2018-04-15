@@ -51,8 +51,13 @@ class ClueClosedRep extends BaseRep
         }
         if(!empty($orders)){
             foreach ($orders as $c => $o){
-                if($o == 0)
-                    $query->orderBy($table.'.'.$c, 'DESC');
+                if($o == 0){
+                    if(in_array($c, ['number', 'reflected_name', 'company', 'post', 'level'])){
+                        $query->orderBy($table.'.'.$c, 'DESC');
+                    }else if(in_array($c, ['main_content', 'leader_approval', 'remark'])){
+                        $query->orderBy($table2.'.'.$c, 'DESC');
+                    }
+                }
             }
         }
         $total = $query->count();
