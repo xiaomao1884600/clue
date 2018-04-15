@@ -56,4 +56,20 @@ class DocumentController extends Controller
             return ApiExceptions::handle($exception);
         }
     }
+
+    /**
+     * 公文详情
+     *
+     * @param Request $request
+     * @param DocumentService $documentService
+     * @return type
+     */
+    public function documentView(Request $request, DocumentService $documentService)
+    {
+        try {
+            return Message::success($documentService->documentView(requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
+    }
 }
