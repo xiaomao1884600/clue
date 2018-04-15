@@ -146,7 +146,7 @@ class DocumentService extends BaseService
         $condition = [];
         if(is_array($params['orders']) && !empty($params['orders'])){
             foreach($params['orders'] as $val){
-                $condition['order'][$val['column']] = ($val['order'] == 1) ? 1 : 0;
+                $condition['order'][$val['column']] = (int)$val['order'];
             }
         }
         $condition['document_type'] = $params['document_type'];

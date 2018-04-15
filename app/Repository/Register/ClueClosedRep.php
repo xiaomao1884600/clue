@@ -33,7 +33,7 @@ class ClueClosedRep extends BaseRep
     public function getClosedList(array $params, $isAll = false){
         $table = $this->clue->getTableName();
         $table2 = $this->clueDetail->getTableName();
-        $orders = isset($params['order']) ?: [];
+        $orders = isset($params['order']) ? $params['order'] : [];
         $pagesize = isset($params['pagesize']) && $params['pagesize'] ?: 5;
         $page = isset($params['page']) && $params['page'] ?: 1;
         $query = $this->clue
@@ -49,15 +49,11 @@ class ClueClosedRep extends BaseRep
         if(isset($params['end']) && $params['end']){
             $query->where($table.'.entry_time', '<=', $params['end']);
         }
-        if(isset($orders['number']) && $params['number']){
-            $query->orderBy($table.'.number', 'DESC');
-        }else{
-            $query->orderBy($table.'.number', 'ASC');
-        }
-        if(isset($orders['reflected_name']) && $params['reflected_name']){
-            $query->orderBy($table.'.reflected_name', 'DESC');
-        }else{
-            $query->orderBy($table.'.reflected_name', 'ASC');
+        if(!empty($orders)){
+            foreach ($orders as $c => $o){
+                if($o == 0)
+                    $query->orderBy($table.'.'.$c, 'DESC');
+            }
         }
         $total = $query->count();
         if(!$isAll){

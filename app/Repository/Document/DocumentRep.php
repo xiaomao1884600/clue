@@ -38,7 +38,7 @@ class DocumentRep extends BaseRep
     public function getDocumentList(array $params, $isAll)
     {
         $table = $this->documentModel->getTableName();
-        $orders = isset($params['order']) ?: [];
+        $orders = isset($params['order']) ? $params['order'] : [];
         $pagesize = (isset($params['pagesize']) && $params['pagesize']) ? $params['pagesize'] : 10;
         $page = (isset($params['page']) && $params['page']) ? $params['page'] : 1;
         $query = $this->documentModel
@@ -55,10 +55,11 @@ class DocumentRep extends BaseRep
         if(isset($params['end']) && $params['end']){
             $query->where($table.'.document_date', '<=', $params['end']);
         }
-        if(isset($orders['document_type']) && $params['document_type']){
-            $query->orderBy($table.'.document_type', 'DESC');
-        }else{
-            $query->orderBy($table.'.document_type', 'ASC');
+        if(!empty($orders)){
+            foreach ($orders as $c => $o){
+                if($o == 0)
+                    $query->orderBy($table.'.'.$c, 'DESC');
+            }
         }
         $total = $query->count();
         if(!$isAll){
