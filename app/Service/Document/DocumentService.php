@@ -25,7 +25,6 @@ class DocumentService extends BaseService
         [
             'document_date' => '发文日期',
             'document_code' => '发文字号',
-            'username' => '姓名',
             'document_title' => '文件标题',
             'document_user' => '发文人',
             'document_unit' => '发文单位',
@@ -115,7 +114,19 @@ class DocumentService extends BaseService
         $res = $this->dRep->getDocumentList($condition, $isAll);
         //导出功能
         if($isAll && !empty($res['data'])){
-            $this->documentExport($res['data']);
+            //过滤多余字段
+            $data = [];
+            foreach($res['data'] as $val){
+                $data[] = [
+                    'document_date' => $val['document_date'],
+                    'document_code' => $val['document_code'],
+                    'document_title' => $val['document_title'],
+                    'document_user' => $val['document_user'],
+                    'document_unit' => $val['document_unit'],
+                    'memo' => $val['memo']
+                ];
+            }
+            $this->documentExport($data);
         }
         return $res;
     }

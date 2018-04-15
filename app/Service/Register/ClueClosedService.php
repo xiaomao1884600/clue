@@ -23,8 +23,8 @@ class ClueClosedService extends BaseService
         [
             'number' => '编号',
             'reflected_name' => '被反映人',
-            'company' => '单位',
-            'main_content' => '主要问题',
+            'company' => '工作单位及职务',
+            'main_content' => '反应的主要问题',
             'leader_approval' => '领导批示',
             'remark' => '备注'
         ]
@@ -53,7 +53,19 @@ class ClueClosedService extends BaseService
         $res = $this->closedRep->getClosedList($condition, $isAll);
         //导出功能
         if($isAll && !empty($res['data'])){
-            $this->closedClueExport($res['data']);
+            //过滤多余字段
+            $data = [];
+            foreach($res['data'] as $val){
+                $data[] = [
+                    'number' => $val['number'],
+                    'reflected_name' => $val['reflected_name'],
+                    'company' => $val['company'] .'—'. $val['post'],
+                    'main_content' => $val['main_content'],
+                    'leader_approval' => $val['leader_approval'],
+                    'remark' => $val['remark']
+                ];
+            }
+            $this->closedClueExport($data);
         }
         return $res;
     }
