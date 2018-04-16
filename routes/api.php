@@ -96,29 +96,30 @@ Route::group(['middleware' => ['verify_token']], function(){
 
     });
 
-
-    /**
-     * 登记发放管理（已结线索）
-     */
-    Route::group(['namespace' => 'Register', 'prefix' => 'clue'], function(){
-        // 列表
-        Route::any('closedlist', 'ClueClosedController@getClosedList');
-    });
-
-
-    /**
-     * 公文管理（文书）
-     */
-    Route::group(['namespace' => 'Document', 'prefix' => 'document'], function(){
-        // 公文添加
-        Route::any('save', 'DocumentController@save');
-        //公文列表
-        Route::any('list', 'DocumentController@documentList');
-        // 详情
-        Route::any('view', 'DocumentController@documentView');
-    });
-
 });
+
+
+/**
+ * 登记发放管理（已结线索）
+ */
+Route::group(['namespace' => 'Register', 'prefix' => 'clue'], function(){
+    // 列表
+    Route::any('closedlist', 'ClueClosedController@getClosedList');
+});
+
+
+/**
+ * 公文管理（文书）
+ */
+Route::group(['namespace' => 'Document', 'prefix' => 'document'], function(){
+    // 公文添加
+    Route::any('save', 'DocumentController@save');
+    //公文列表
+    Route::any('list', 'DocumentController@documentList');
+    // 详情
+    Route::any('view', 'DocumentController@documentView');
+});
+
 
 Route::group(['namespace' => 'Foundation', 'prefix' => 'dic'], function(){
     // 字典

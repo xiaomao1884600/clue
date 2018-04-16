@@ -222,6 +222,16 @@ class ClueSearchService extends BaseService
             $conditon['orWhere'] = $this->getKeyWordCondition($keyWord);
         }
 
+        // 级别
+        if (_isset($params, 'level')) {
+            $conditon['where'][] = ['field' => 'level', 'operator' => 'like', 'value' => "%" . _isset($params, 'level') . "%"];
+        }
+        
+        // 状态
+        if (_isset($params, 'clue_state')) {
+            $conditon['where'][] = ['field' => 'clue_state', 'operator' => '=', 'value' => _isset($params, 'clue_state')];
+        }
+
 
         if ($orders) {
             foreach ($orders as $k => $v) {
