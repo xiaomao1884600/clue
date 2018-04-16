@@ -34,8 +34,6 @@ class ClueClosedRep extends BaseRep
         $table = $this->clue->getTableName();
         $table2 = $this->clueDetail->getTableName();
         $orders = isset($params['order']) ? $params['order'] : [];
-        $pagesize = isset($params['pagesize']) && $params['pagesize'] ?: 5;
-        $page = isset($params['page']) && $params['page'] ?: 1;
         $query = $this->clue
             ->select($table.'.number', $table.'.reflected_name', $table.'.company', $table.'.post',
                 $table.'.level', $table2.'.main_content', $table2.'.leader_approval', $table2.'.remark')
@@ -62,8 +60,8 @@ class ClueClosedRep extends BaseRep
         }
         $total = $query->count();
         if(!$isAll){
-            $query->take($pagesize);
-            $query->skip(($page - 1) * $pagesize);
+            $query->take($params['pagesize']);
+            $query->skip(($params['page'] - 1) * $params['pagesize']);
         }
         $query = $query->get();
         return $query && count($query) ? ['data' => $query->toArray(), 'total' => $total] : ['data' => [], 'total' => 0];

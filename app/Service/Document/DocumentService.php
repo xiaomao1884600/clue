@@ -164,6 +164,8 @@ class DocumentService extends BaseService
         $condition['document_user'] = $params['document_user'];
         $condition['begin'] = $params['beginDate'] ? $params['beginDate'] . ' 00:00:00' : 0;
         $condition['end'] = $params['endDate'] ? $params['endDate'] . ' 23:59:59' : 0;
+        $condition['page'] = (isset($params['page']) && $params['page']) ? (int)$params['page'] : 1;
+        $condition['pagesize'] = (isset($params['pagesize']) && $params['pagesize']) ? (int)$params['pagesize'] : 10;
         return $condition;
     }
     

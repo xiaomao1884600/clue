@@ -39,15 +39,13 @@ class DocumentRep extends BaseRep
     {
         $table = $this->documentModel->getTableName();
         $orders = isset($params['order']) ? $params['order'] : [];
-        $pagesize = (isset($params['pagesize']) && $params['pagesize']) ? $params['pagesize'] : 10;
-        $page = (isset($params['page']) && $params['page']) ? $params['page'] : 1;
         $query = $this->documentModel
             ->select('*');
         if(isset($params['document_user']) && $params['document_user']){
             $query->where($table.'.document_user', 'like', "%{$params['document_user']}%");
         }
-        if(isset($params['document_user']) && $params['document_user']){
-            $query->where($table.'.document_user', '=', $params['document_user']);
+        if(isset($params['document_type']) && $params['document_type']){
+            $query->where($table.'.document_type', '=', $params['document_type']);
         }
         if(isset($params['begin']) && $params['begin']){
             $query->where($table.'.document_date', '>=', $params['begin']);
@@ -65,8 +63,8 @@ class DocumentRep extends BaseRep
         }
         $total = $query->count();
         if(!$isAll){
-            $query->take($pagesize);
-            $query->skip(($page - 1) * $pagesize);
+            $query->take($params['pagesize']);
+            $query->skip(($params['page'] - 1) * $params['pagesize']);
         }
         $query = $query->get();
         return $query && count($query) ? ['data' => $query->toArray(), 'total' => $total] : ['data' => [], 'total' => 0];
