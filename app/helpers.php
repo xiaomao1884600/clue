@@ -1094,3 +1094,13 @@ if (! function_exists('filterArrayEmptyItem'))
         }
     }
 }
+
+if(! function_exists(''))
+{
+    function diffDays($endDate, $startDate)
+    {
+        $date=round((strtotime($endDate)-strtotime($startDate))/86400);
+
+        return $date;
+    }
+}

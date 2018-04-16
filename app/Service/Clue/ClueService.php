@@ -249,6 +249,15 @@ class ClueService extends BaseService
         // 获取线索信息
         $result['clue'] = $this->clueRep->getClueByClueId(['clue_id' => $clueId]);
 
+        // 计算距离结案日期天数
+        $date = getTodayDate();
+        $closedDate = $result['clue']['closed_time'] ?? '';
+        $days = 0;
+        if($closedDate){
+            $days = diffDays($closedDate, $date);
+        }
+        $result['clue']['days_from_closed'] = $days;
+
         // 获取线索详情
         $result['clue_detail'] = $this->clueRep->getClueDetailByClueId(['clue_id' => $clueId]);
 
