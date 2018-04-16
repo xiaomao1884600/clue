@@ -134,7 +134,6 @@ class CaseUploadService extends BaseService
         $failedData = $this->importExcelService->setFailedData($excelData, $error, $params);
 
         array_walk($excelData, function(& $value){
-            $value['id'] = guid();
             $value['op_type'] = 1;
         });
 
