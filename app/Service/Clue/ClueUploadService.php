@@ -189,11 +189,11 @@ class ClueUploadService extends BaseService
         // 检测必填项
         $error = $this->importExcelService->verifyRequired($excelData, $requiredRule, $error);
 
-        // todo 检测编号重复数据并删除
-        $this->clearVerifyClueNumber($excelData);
-
         // 处理失败信息
         $failedData = $this->importExcelService->setFailedData($excelData, $error, $params);
+
+        // todo 检测编号重复数据并删除
+        $this->clearVerifyClueNumber($excelData);
 
         // 线索字典入库转换
         $excelData = $this->clueDic->convertDic($excelData, $dicField, 1);
