@@ -25,6 +25,12 @@ class VerifySecretKey
     public function handle($request, Closure $next)
     {
 
+        // 测试环境不检测
+        $appEnv = $_ENV['APP_ENV'] ?? '';
+        if('dev' == $appEnv){
+            return $next($request);
+        }
+
         // 检测macadress
         $result = $this->shellService->getCpu();
         $macAddress = $result['macAddress'] ?? '';
@@ -35,7 +41,7 @@ class VerifySecretKey
         $envSecretKey = $_ENV['APP_SECRET_KEY'] ?? '';
 
         if($envSecretKey != $secretKey){
-            throw new \Exception('Incorrect secretKey');
+            throw new \Exception('Incorrect secretKey', 1006);
         }
 
         return $next($request);

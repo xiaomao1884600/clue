@@ -45,8 +45,8 @@ Route::group(['namespace' => 'Clue', 'prefix' => 'clue'], function(){
 });
 
 
-// token验证
-Route::group(['middleware' => ['verify_token']], function(){
+// token、secretkey验证
+Route::group(['middleware' => ['verify_token', 'verify_secretkey']], function(){
 //Route::group(['middleware' => []], function(){
     /**
      * 导出word TODO 增加身份验证
