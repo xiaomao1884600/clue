@@ -197,6 +197,7 @@ class ImportExcelService extends BaseService
         foreach($error as $k => $v){
             if(isset($data[$k])){
                 $failedData[] = [
+                    'line' => $k + 1,
                     'data' => $data[$k],
                     'error' => $v,
                 ];
