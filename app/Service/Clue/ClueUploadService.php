@@ -202,6 +202,7 @@ class ClueUploadService extends BaseService
         $this->clueService->saveExcelClue($excelData);
 
         $result = [
+            'type' => 't_clue',
             'successData' => ['total' => count($excelData)],
             'failedData' => ['total' => count($failedData) ,'data' => $failedData],
         ];

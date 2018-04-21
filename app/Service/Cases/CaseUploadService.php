@@ -82,6 +82,7 @@ class CaseUploadService extends BaseService
         $this->caseRep->saveCaseClue($excelData);
 
         $result = [
+            'type' => 't_case_clue',
             'successData' => ['total' => count($excelData)],
             'failedData' => ['total' => count($failedData) ,'data' => $failedData],
         ];
@@ -143,6 +144,7 @@ class CaseUploadService extends BaseService
         $this->caseRep->saveFiling($excelData);
 
         $result = [
+            'type' => 't_filing',
             'successData' => ['total' => count($excelData)],
             'failedData' => ['total' => count($failedData) ,'data' => $failedData],
         ];
