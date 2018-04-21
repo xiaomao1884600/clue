@@ -28,6 +28,7 @@ class DocumentService extends BaseService
             'document_title' => '文件标题',
             'document_user' => '发文人',
             'document_unit' => '发文单位',
+            'document_signatory' => '领取人'
             'memo' => '备注'
         ]
     ];
@@ -72,6 +73,7 @@ class DocumentService extends BaseService
             'document_title' => 'required|string',
             'document_user' => 'required|string',
             'document_unit' => 'required|string',
+            'document_signatory' => 'required|string',
         ], [
             'document_date.required' => '缺少发文日期',
             'document_code.required' => '缺少发文字号',
@@ -80,6 +82,7 @@ class DocumentService extends BaseService
             'document_title.required' => '请输入文件标题',
             'document_user.required' => '请输入发文人',
             'document_unit.required' => '请输入发文单位',
+            'document_signatory.required' => '请输入领取人',
         ]);
         if($validator->fails()){
             throw new \Exception($validator->errors()->first(), 6666);
@@ -123,6 +126,7 @@ class DocumentService extends BaseService
                     'document_title' => $val['document_title'],
                     'document_user' => $val['document_user'],
                     'document_unit' => $val['document_unit'],
+                    'document_signatory' => $val['document_signatory'],
                     'memo' => $val['memo']
                 ];
             }
