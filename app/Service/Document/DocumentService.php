@@ -28,8 +28,8 @@ class DocumentService extends BaseService
             'document_title' => '文件标题',
             'document_user' => '发文人',
             'document_unit' => '发文单位',
-            'document_signatory' => '领取人'
-            'memo' => '备注'
+            'document_signatory' => '领取人',
+            'memo' => '备注',
         ]
     ];
 
