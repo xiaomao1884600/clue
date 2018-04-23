@@ -6,6 +6,12 @@
  * Time: 下午11:54
  */
 return [
+    // 系统配置
+    'system' => [
+        'run_start_time' => '2018-05-01',
+        'run_days' => 365,
+    ],
+
     'clue_excel' => [
         'title_rule' => [
             '线索来源' => 'source',

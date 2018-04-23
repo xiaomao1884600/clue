@@ -88,14 +88,25 @@ class ShellService extends BaseService
             sort($macInfo);
         }
 
-//        $cpu = $this->testMacAddress;
-//        $cpu = $cpu[8] ?? '';
-        
         $macAddress = json_encode($macInfo);
+
+        // 获取系统运行配置
+        $systemInfo = config('clue.system');
+        $currentDate = getTodayDate();
+        $runStartTime = $systemInfo['run_start_time'] ?? '';
+        $runDays = $systemInfo['run_days'] ?? 10000;
+        $runExpireTime = '';
+        if($runStartTime && $runDays){
+            $runExpireTime = date("Y-m-d",strtotime("{$runDays} days",strtotime($runStartTime)));
+        }
+        $systemInfo['run_expire_time'] = $runExpireTime;
 
         return [
             'macAddress' => $macAddress,
             'secretKey' => md5($macAddress),
+            'run_start_time' => $runStartTime,
+            'run_days' => $runDays,
+            'run_expire_time' => $runExpireTime,
         ];
 
     }

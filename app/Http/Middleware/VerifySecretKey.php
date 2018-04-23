@@ -44,6 +44,14 @@ class VerifySecretKey
             throw new \Exception('Incorrect secretKey', 1006);
         }
 
+        // 检测运行是否过期
+        $currentDay = getTodayDate();
+        $runExpireTime = $result['run_expire_time'] ?? '';
+
+        if($runExpireTime && $currentDay > $runExpireTime){
+            throw new \Exception("run expire time is 【{$runExpireTime}】", 1006);
+        }
+
         return $next($request);
 
     }
