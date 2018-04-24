@@ -270,6 +270,7 @@ class ClueSearchService extends BaseService
         // whereBetween条件
         if (_isset($params, 'entry_start_time')) {
             $entryEndTime = _isset($params, 'entry_end_time', getTodayDate());
+            $entryEndTime = date('Y-m-d', strtotime($entryEndTime)) . ' 23:59:59';
             $conditon['whereBetween'][] = ['field' => 'entry_time', 'between' => $params['entry_start_time'], 'and' => $entryEndTime];
         }
 
