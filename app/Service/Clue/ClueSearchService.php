@@ -269,9 +269,11 @@ class ClueSearchService extends BaseService
 
         // whereBetween条件
         if (_isset($params, 'entry_start_time')) {
+            $entryStartTime = $params['entry_start_time'] ?? getTodayDate();
+            $entryStartTime = date('Y-m-d', strtotime($entryStartTime)) . ' 00:00:00';
             $entryEndTime = _isset($params, 'entry_end_time', getTodayDate());
             $entryEndTime = date('Y-m-d', strtotime($entryEndTime)) . ' 23:59:59';
-            $conditon['whereBetween'][] = ['field' => 'entry_time', 'between' => $params['entry_start_time'], 'and' => $entryEndTime];
+            $conditon['whereBetween'][] = ['field' => 'entry_time', 'between' => $entryStartTime, 'and' => $entryEndTime];
         }
 
         // 线索来源
