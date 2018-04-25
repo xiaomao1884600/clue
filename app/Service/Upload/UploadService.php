@@ -50,7 +50,9 @@ class UploadService extends BaseService
         // 上传文件地址
         $fileInfo['path'] = $this->getUploadFilePath($params);
 
-        $fileName = $fileInfo['path'] ? $fileInfo['path'] . DS . $fileInfo['newFileName'] : $fileInfo['newFileName'];
+        // TODO 获取上传文件名称，解决中文乱码
+        $uploadFileName = $this->getUploadFileName($fileInfo);
+        $fileName = $fileInfo['path'] ? $fileInfo['path'] . DS . $uploadFileName : $uploadFileName;
 
         // TODO 可以使用move方式, 中文名称上传有问题
         //$fileInfo['file_path'] = $file->move($fileInfo['fileurl'], iconv('UTF-8', 'GBK//IGNORE', $fileInfo['newFileName']));
@@ -142,6 +144,17 @@ class UploadService extends BaseService
     protected function getNewFileName($fileInfo, $params = [])
     {
         return $fileInfo['name'] . '_' . date('ymdhis', TIMENOW).".".$fileInfo['extension'];
+    }
+
+    /**
+     * 获取上传文件名称
+     * @param $originalName
+     * @return bool|string
+     */
+    protected function getUploadFileName($fileInfo, $params = [])
+    {
+        $name = md5(urlencode($fileInfo['name']));
+        return $name . '_' . date('ymdhis', TIMENOW).".".$fileInfo['extension'];
     }
 
     /**
