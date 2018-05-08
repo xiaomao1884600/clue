@@ -181,6 +181,7 @@ class ClueSearchService extends BaseService
         if(! $keyWord) return $condition;
 
         $conditon =  [
+            'source_dic' => $keyWord,
             'source' => $keyWord,
             'number' => $keyWord,
             'reflected_name' => $keyWord,
@@ -276,6 +277,11 @@ class ClueSearchService extends BaseService
             $conditon['whereBetween'][] = ['field' => 'entry_time', 'between' => $entryStartTime, 'and' => $entryEndTime];
         }
 
+        // 线索来源字典
+        if (_isset($params, 'source_dic')) {
+            $conditon['where'][] = ['field' => 'source_dic', 'operator' => 'like', 'value' => "%" . _isset($params, 'source_dic') . "%"];
+        }
+
         // 线索来源
         if (_isset($params, 'source')) {
             $conditon['where'][] = ['field' => 'source', 'operator' => 'like', 'value' => "%" . _isset($params, 'source') . "%"];
@@ -366,6 +372,9 @@ class ClueSearchService extends BaseService
 
         // 获取线索信息
         $responseData['clue'] = $this->getClueInfoByReflectedName($condition);
+
+        // TODO 等级发放
+        $responseData['register'] = $this->getClueInfoByReflectedName($condition);
 
         // 获取公文信息
         $responseData['document'] = $this->getDocumentByReflectedName($condition);

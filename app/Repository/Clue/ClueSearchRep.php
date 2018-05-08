@@ -111,8 +111,9 @@ class ClueSearchRep extends BaseRep
         $size = _isset($condition, 'size', PAGESIZE);
         if(! $reflectedName) return [];
 
+        // TODO 公文的关联改为标题匹配
         $result = $this->document
-                ->where('username','like', "%" . $reflectedName . "%")
+                ->where('document_title','like', "%" . $reflectedName . "%")
                 ->orderBy('document_date', 'DESC')
                 ->paginate($size)
                 ->toArray();

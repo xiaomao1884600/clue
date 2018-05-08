@@ -26,6 +26,7 @@ class ClueService extends BaseService
      */
     protected $clueField = [
         'clue_id' => 'clue_id',
+        'source_dic' => 'source_dic',
         'source' => 'source',
         'number' => 'number',
         'reflected_name' => 'reflected_name',
@@ -58,7 +59,8 @@ class ClueService extends BaseService
 
     protected $testClueInfo = [
         'clue' => [
-            'source' => 2, // 线索来源
+            'source_dic' => '线索来源字典', // 线索来源字典
+            'source' => '线索来源输入框', // 线索来源
             'number' => TIMENOW, // 编号
             'reflected_name' => 'zhangsan', // 被反映人
             'company' => '天宇国际', // 单位
@@ -66,11 +68,11 @@ class ClueService extends BaseService
             'level' => 1,  // 级别
             'entry_time' => '2018-03-17 10:00:00',  // 录入日期
             'closed_time' => '2018-05-20 10:00:00', // 结案日期
-            'disposal_type' => 1, // 处置类型
+            'disposal_type' => '集体排查', // 处置类型
             'supervisor' => 1, // 是否上级交办
             'remind_days' => 8, // 提醒天数
-            'clue_next' => 8, // 线索去向
-            'clue_state' => 8, // 线索状态
+            'clue_next' => '干部监督室', // 承办部门
+            'clue_state' => '待办', // 线索状态
         ],
         'clue_detail' => [
             'main_content' => '严重违纪', // 主要内容
