@@ -242,7 +242,9 @@ class ClueRep extends BaseRep
             $order = rtrim($order, ',');
         }
         $res = DB::select("
-            SELECT c.clue_id, c.source_dic, c.source, c.number, c.reflected_name, c.closed_time, a.days FROM (
+            SELECT c.clue_id, c.source_dic, c.source, c.number, c.reflected_name, c.closed_time, a.days,
+            FROM_UNIXTIME(UNIX_TIMESTAMP(closed_time) - remind_days * 86400, '%Y-%m-%d %H:%i:%s') as news
+            FROM (
                 SELECT pk_id, CEILING((UNIX_TIMESTAMP(closed_time) - UNIX_TIMESTAMP()) / 86400) AS days FROM t_clue
             ) a
             INNER JOIN t_clue AS c ON c.pk_id = a.pk_id AND a.days <= c.remind_days
