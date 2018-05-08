@@ -12,6 +12,7 @@ use App\Model\Clue\ClueAttachments;
 use App\Model\Clue\ClueDeleted;
 use App\Model\Clue\ClueDetail;
 use App\Repository\Foundation\BaseRep;
+use DB;
 
 class ClueRep extends BaseRep
 {
@@ -226,16 +227,33 @@ class ClueRep extends BaseRep
      * @param array $data
      * @return type
      */
-    public function getOverdueRemind(array $pk_ids)
+    public function getOverdueRemind(array $params)
     {
-        $table = $this->clue->getTableName();
-        $query = $this->clue
-            ->select($table . '.clue_id', $table . '.pk_id', $table . '.source', $table . '.number', $table . '.reflected_name',
-                $table . '.closed_time');
-        $query->whereIn($table . '.pk_id', $pk_ids);
-        $query->orderBy($table . '.closed_time');
-        $query = $query->get();
-        return $query && count($query) ? $query->toArray() : [];
+        //排序
+        $orders = isset($params['order']) ? $params['order'] : [];
+        $order = '';
+        if(!empty($orders)){
+            //防止参数错传，获取表结构进行验证
+            $tableRows = $this->clue->getTableDesc('t_clue');
+            foreach ($orders as $c => $o){
+                if($o == 0 && array_key_exists($c, $tableRows))
+                    $order .= 'c.' . $c . ' DESC,';
+            }
+            $order = rtrim($order, ',');
+        }
+        $res = DB::select("
+            SELECT c.clue_id, c.source_dic, c.source, c.number, c.reflected_name, c.closed_time, a.days FROM (
+                SELECT pk_id, CEILING((UNIX_TIMESTAMP(closed_time) - UNIX_TIMESTAMP()) / 86400) AS days FROM t_clue
+            ) a
+            INNER JOIN t_clue AS c ON c.pk_id = a.pk_id AND a.days <= c.remind_days
+            WHERE c.clue_state <> 1
+            ".((isset($params['begin']) && $params['begin']) ? "AND c.closed_time >= '{$params['begin']}'" : '')."
+            ".((isset($params['end']) && $params['end']) ? "AND c.closed_time <= '{$params['end']}'" : '')."
+            ".(($params['temp'] === true) ? "AND a.days >= 0" : '')."
+            ".($order ? " ORDER BY ".$order : '')."
+            LIMIT ".($params['page'] - 1) * $params['pagesize'].", ".$params['pagesize']."
+        ");
+        return array_map('get_object_vars', $res);
     }
 
     /**
@@ -327,13 +345,18 @@ class ClueRep extends BaseRep
      * @param array $data
      * @return type
      */
-    public function getRemindTotal(array $data)
+    public function getRemindTotal(array $params)
     {
-        $table = $this->clue->getTableName();
-        $query = $this->clue
-            ->select($table . '.pk_id', $table . '.clue_id', $table . '.closed_time', $table . '.remind_days');
-        $query->where($table . '.clue_state', '<>', 1);
-        $query = $query->get();
-        return $query && count($query) ? $query->toArray() : [];
+        $res = DB::select("
+            SELECT COUNT(*) AS total FROM (
+                SELECT pk_id, CEILING((UNIX_TIMESTAMP(closed_time) - UNIX_TIMESTAMP()) / 86400) AS days FROM t_clue
+            ) a
+            INNER JOIN t_clue AS c ON c.pk_id = a.pk_id AND a.days <= c.remind_days
+            WHERE c.clue_state <> 1
+            ".((isset($params['begin']) && $params['begin']) ? "AND c.closed_time >= '{$params['begin']}'" : '')."
+            ".((isset($params['end']) && $params['end']) ? "AND c.closed_time <= '{$params['end']}'" : '')."
+            ".(($params['temp'] === true) ? "AND a.days >= 0" : '')."
+        ");
+        return $res[0] ? $res[0]->total : 0;
     }
 }

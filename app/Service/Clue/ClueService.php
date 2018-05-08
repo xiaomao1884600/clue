@@ -396,25 +396,34 @@ class ClueService extends BaseService
      */
     public function overdueRemind(array $params)
     {
+        //处理检索条件
+        $condition = $this->getClueCondition($params);
         //获取超期提醒总数
-        $rawData = $this->getRemindTotal([]);
-        $pagesize = (isset($data['pagesize']) && $data['pagesize']) ? $data['pagesize'] : 10;
-        $page = (isset($data['page']) && $data['page']) ? $data['page'] : 1;
-        //根据参数php处理分页
-        //先根据提醒时间排序
-        $flag = [];  
-        foreach($rawData as $k=>$v){  
-            $flag[$k] = $v['days'];  
-        }  
-        array_multisort($flag, SORT_DESC, $rawData);  
-        $data = array_slice($rawData, ($page-1) * $pagesize, $pagesize);
-        $arr = array_column($data, 'days', 'pk_id');
-        $pk_ids = array_column($data, 'pk_id');
-        $res = $this->clueRep->getOverdueRemind($pk_ids);
-        foreach ($res as &$val){
-            $val['remind_days'] = $arr[$val['pk_id']];
+        $total = $this->clueRep->getRemindTotal($condition);
+        $overdueRemindData = $this->clueRep->getOverdueRemind($condition);
+        return ['data' => $overdueRemindData, 'total' => $total];
+    }
+    
+    /**
+     * 超期提醒条件整理
+     * 
+     * @param type $params
+     * @return type
+     */
+    public function getClueCondition($params)
+    {
+        $condition = [];
+        if(isset($params['orders']) && is_array($params['orders']) && !empty($params['orders'])){
+            foreach($params['orders'] as $val){
+                $condition['order'][$val['column']] = (int)$val['order'];
+            }
         }
-        return $res;
+        $condition['temp'] = ((isset($params['beginDate']) && $params['beginDate']) || (isset($params['beginDate']) && $params['beginDate'])) ? false : true;
+        $condition['begin'] = (isset($params['beginDate']) && $params['beginDate']) ? $params['beginDate'] . ' 00:00:00' : '';
+        $condition['end'] = (isset($params['endDate']) && $params['endDate']) ? $params['endDate'] . ' 23:59:59' : '';
+        $condition['page'] = (isset($params['page']) && $params['page']) ? (int)$params['page'] : 1;
+        $condition['pagesize'] = (isset($params['pagesize']) && $params['pagesize']) ? (int)$params['pagesize'] : 10;
+        return $condition;
     }
 
     /**
@@ -509,29 +518,6 @@ class ClueService extends BaseService
      */
     public function remindTotal(array $params)
     {
-        $rawData = $this->getRemindTotal([]);
-        return ['total' => count($rawData)];
-    }
-    
-    /**
-     * 获取超期提醒数据
-     * 
-     * @param array $params
-     * @return type
-     */
-    public function getRemindTotal(array $params)
-    {
-        $rawData = $this->clueRep->getRemindTotal($params);
-        if(!empty($rawData)){
-            foreach ($rawData as $key=>&$val){
-                $days = (strtotime($val['closed_time']) - time()) / 86400;
-                if($days > 0 && $days <= $val['remind_days']){
-                    $val['days'] = ceil($days);
-                }else{
-                    unset($rawData[$key]);
-                }
-            }
-        }
-        return $rawData;
+        return $this->clueRep->getRemindTotal([]);
     }
 }
