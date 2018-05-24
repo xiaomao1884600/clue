@@ -14,6 +14,7 @@ use App\Model\Cases\Filing;
 use App\Model\Clue\Clue;
 use App\Model\Clue\ClueDetail;
 use App\Model\Document\Document;
+use App\Model\Register\Register;
 use App\Repository\Foundation\BaseRep;
 
 class ClueSearchRep extends BaseRep
@@ -28,12 +29,15 @@ class ClueSearchRep extends BaseRep
 
     protected $filing;
 
+    protected $register;
+
     public function __construct(
         Clue $clue,
         ClueDetail $clueDetail,
         Document $document,
         CaseClue $caseClue,
-        Filing $filing
+        Filing $filing,
+        Register $register
     )
     {
         parent::__construct();
@@ -42,6 +46,7 @@ class ClueSearchRep extends BaseRep
         $this->document = $document;
         $this->caseClue = $caseClue;
         $this->filing = $filing;
+        $this->register = $register;
     }
 
     /**
@@ -155,6 +160,26 @@ class ClueSearchRep extends BaseRep
         $result = $this->filing
             ->where('reflected_name', 'like', "%" . $reflectedName . "%")
             ->orderBy('trial_accept_time', 'DESC')
+            ->paginate($size)
+            ->toArray();
+
+        return $result;
+    }
+
+    /**
+     * 获取登记发放被反映人数据信息
+     * @param array $condition
+     * @return array
+     */
+    public function getRegisterByReflectedName(array $condition)
+    {
+        $reflectedName = _isset($condition, 'reflected_name');
+        $size = _isset($condition, 'size', PAGESIZE);
+        if(! $reflectedName) return [];
+        // TODO 后期改为立案的数据
+        $result = $this->register
+            ->where('reflected_name', 'like', "%" . $reflectedName . "%")
+            ->orderBy('entry_time', 'DESC')
             ->paginate($size)
             ->toArray();
 

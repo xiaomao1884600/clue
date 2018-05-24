@@ -373,8 +373,8 @@ class ClueSearchService extends BaseService
         // 获取线索信息
         $responseData['clue'] = $this->getClueInfoByReflectedName($condition);
 
-        // TODO 等级发放
-        $responseData['register'] = $this->getClueInfoByReflectedName($condition);
+        // TODO 登记发放
+        $responseData['register'] = $this->getRegisterByReflectedName($condition);
 
         // 获取公文信息
         $responseData['document'] = $this->getDocumentByReflectedName($condition);
@@ -471,6 +471,21 @@ class ClueSearchService extends BaseService
 
         $result = $this->clueSearchRep->getCaseFilingByReflectedName(['reflected_name' => $params['reflected_name']]);
         $result['data'] = $result['data'] ? screenArray($result['data'], $this->caseFilingField) : [];
+
+        return Response::responsePaginate($result, $result['data']);
+    }
+
+    /**
+     * 获取被反映人登记发放信息
+     * @param array $params
+     * @return array
+     */
+    protected function getRegisterByReflectedName(array $params)
+    {
+        // 设置页码
+        $this->setPage($params);
+
+        $result = $this->clueSearchRep->getRegisterByReflectedName(['reflected_name' => $params['reflected_name']]);
 
         return Response::responsePaginate($result, $result['data']);
     }

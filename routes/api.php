@@ -105,6 +105,19 @@ Route::group(['middleware' => ['verify_token', 'verify_secretkey']], function(){
 Route::group(['namespace' => 'Register', 'prefix' => 'clue'], function(){
     // 列表
     Route::any('closedlist', 'ClueClosedController@getClosedList');
+
+    // 导出登记发放word文档
+    Route::any('register_export_word', 'RegisterController@registerExportWord');
+
+    // 录入等级发放
+    Route::any('save_register', 'RegisterController@saveRegister');
+
+    // 检测登记发放编号
+    Route::any('check_register_number', 'RegisterController@checkRegisterNumber');
+
+    // 线索明细查看
+    Route::any('view_register', 'RegisterController@viewRegister');
+
 });
 
 

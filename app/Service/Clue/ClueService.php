@@ -10,6 +10,7 @@ namespace App\Service\Clue;
 
 
 use App\Repository\Clue\ClueRep;
+use App\Repository\Register\RegisterRep;
 use App\Service\Foundation\BaseService;
 use App\Service\Foundation\DicService;
 use Illuminate\Support\Facades\Storage;
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\Storage;
 class ClueService extends BaseService
 {
     protected $clueRep;
+
+    protected $registerRep;
 
     protected $dicService;
 
@@ -72,7 +75,7 @@ class ClueService extends BaseService
             'supervisor' => 1, // 是否上级交办
             'remind_days' => 8, // 提醒天数
             'clue_next' => '干部监督室', // 承办部门
-            'clue_state' => '待办', // 线索状态
+            'clue_state' => '已办', // 线索状态
         ],
         'clue_detail' => [
             'main_content' => '严重违纪', // 主要内容
@@ -103,11 +106,13 @@ class ClueService extends BaseService
 
     public function __construct(
         ClueRep $clueRep,
+        RegisterRep $registerRep,
         DicService $dicService
     )
     {
         parent::__construct();
         $this->clueRep = $clueRep;
+        $this->registerRep = $registerRep;
         $this->dicService = $dicService;
     }
 
@@ -137,7 +142,26 @@ class ClueService extends BaseService
         // 处理线索附件存储
         $this->processSaveClueAttachments($params['clue_attachments'], $clueId);
 
+        // TODO 检测若为已办线索则转为登记发放
+        if(isset($params['clue']['clue_state']) && '已办' == $params['clue']['clue_state']){
+            $params['clue']['clue_id'] = $clueId;
+            $this->convertClueToRegister($params);
+        }
+
         return ['clue_id' => $clueId];
+    }
+
+    /**
+     * 将已办线索转为登记发放
+     * @param array $params
+     */
+    public function convertClueToRegister(array $params)
+    {
+        $clue = $params['clue'] ?? [];
+        $clueDetail = $params['clue_detail'] ?? [];
+        $register = array_merge($clue, $clueDetail);
+        // 保存登记发放
+        return $this->registerRep->saveRegister([$register]);
     }
 
     public function checkClueNumber(array $params)
