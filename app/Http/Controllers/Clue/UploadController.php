@@ -12,8 +12,10 @@ namespace App\Http\Controllers\Clue;
 use App\Http\Controllers\Controller;
 use App\Service\Cases\CaseUploadService;
 use App\Service\Clue\ClueUploadService;
+use App\Service\Document\DocumentUploadService;
 use App\Service\Exceptions\ApiExceptions;
 use App\Service\Exceptions\Message;
+use App\Service\Register\RegisterUploadService;
 use Illuminate\Http\Request;
 
 class UploadController extends Controller
@@ -59,6 +61,14 @@ class UploadController extends Controller
             return view('filing');
         }
 
+        if('register' == $type){
+            return view('register');
+        }
+
+        if('document' == $type){
+            return view('document');
+        }
+
         return [];
     }
 
@@ -101,6 +111,36 @@ class UploadController extends Controller
     {
         try {
             return Message::success($caseUploadService->importFiling($request, requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
+    }
+
+    /**
+     *  导入登记发放
+     * @param Request $request
+     * @param CaseUploadService $caseUploadService
+     * @return array|mixed
+     */
+    public function importRegisterExcel(Request $request, RegisterUploadService $registerUploadService)
+    {
+        try {
+            return Message::success($registerUploadService->importRegister($request, requestData($request)));
+        } catch (\Exception $exception) {
+            return ApiExceptions::handle($exception);
+        }
+    }
+
+    /**
+     *  导入文书管理
+     * @param Request $request
+     * @param CaseUploadService $caseUploadService
+     * @return array|mixed
+     */
+    public function importDocumentExcel(Request $request, DocumentUploadService $documentUploadService)
+    {
+        try {
+            return Message::success($documentUploadService->importDocument($request, requestData($request)));
         } catch (\Exception $exception) {
             return ApiExceptions::handle($exception);
         }

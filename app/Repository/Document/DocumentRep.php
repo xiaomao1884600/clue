@@ -87,4 +87,12 @@ class DocumentRep extends BaseRep
 
         return $result;
     }
+
+    /*
+     * 批量保存文书管理
+     */
+    public function saveDocument(array $data)
+    {
+        return $this->documentModel->insertUpdateBatch($data);
+    }
 }

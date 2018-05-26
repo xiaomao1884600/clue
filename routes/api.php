@@ -152,6 +152,12 @@ Route::group(['namespace' => 'Clue', 'prefix' => 'excel'], function(){
     //导入立案
     Route::any('import_filing', 'UploadController@importFilingExcel');
 
+    //导入登记发放
+    Route::any('import_register', 'UploadController@importRegisterExcel');
+
+    //导入文书管理
+    Route::any('import_document', 'UploadController@importDocumentExcel');
+
 });
 
 /**

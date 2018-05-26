@@ -23,4 +23,11 @@ class ExcelConfig extends BaseModel
 
     // 案件立案
     const OP_TYPE_CASE_FILING = 3;
+
+    // 登记发放
+    const OP_TYPE_REGISTER = 4;
+
+    // 文书管理
+    const OP_TYPE_DOCUMENT = 5;
+
 }
