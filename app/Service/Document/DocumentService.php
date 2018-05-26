@@ -145,9 +145,9 @@ class DocumentService extends BaseService
     {
         $beginDateline =  isset($params['beginDate']) ? strtotime($params['beginDate'] . ' 00:00:00') : 0;
         $endDateline =  isset($params['endDate']) ? strtotime($params['endDate'] . '23:59:59') : 0;
-        if($endDateline && $beginDateline > $endDateline){
-            throw new \Exception("开始日期不能晚于结束日期");
-        }
+//        if($endDateline && $beginDateline > $endDateline){
+//            throw new \Exception("开始日期不能晚于结束日期");
+//        }
     }
     
     /**
@@ -164,8 +164,8 @@ class DocumentService extends BaseService
                 $condition['order'][$val['column']] = (int)$val['order'];
             }
         }
-        $condition['document_type'] = $params['document_type'];
-        $condition['document_user'] = $params['document_user'];
+        $condition['document_type'] = $params['document_type'] ?? '';
+        $condition['keywords'] = $params['keywords'] ?? '';
         $condition['begin'] = $params['beginDate'] ? $params['beginDate'] . ' 00:00:00' : 0;
         $condition['end'] = $params['endDate'] ? $params['endDate'] . ' 23:59:59' : 0;
         $condition['page'] = (isset($params['page']) && $params['page']) ? (int)$params['page'] : 1;

@@ -38,14 +38,25 @@ class DocumentRep extends BaseRep
     public function getDocumentList(array $params, $isAll)
     {
         $table = $this->documentModel->getTableName();
+        //防止参数错传，获取表结构进行验证
+        $tableRows = $this->documentModel->getTableDesc($table);
         $orders = isset($params['order']) ? $params['order'] : [];
         $query = $this->documentModel
             ->select('*');
-        if(isset($params['document_user']) && $params['document_user']){
-            $query->where($table.'.document_user', 'like', "%{$params['document_user']}%");
-        }
+
         if(isset($params['document_type']) && $params['document_type']){
             $query->where($table.'.document_type', '=', $params['document_type']);
+        }
+        if(isset($params['keywords']) && $params['keywords']){
+
+            $query->where(function($query)use($tableRows, $table, $params){
+                foreach($tableRows as $key => $val){
+                    if(!in_array($key, ['document_date', 'created_at', 'updated_at'])){
+                        $query->orWhere($table.'.'.$key, 'like', "%{$params['keywords']}%");
+                    }
+                }
+            });
+
         }
         if(isset($params['begin']) && $params['begin']){
             $query->where($table.'.document_date', '>=', $params['begin']);
@@ -54,8 +65,6 @@ class DocumentRep extends BaseRep
             $query->where($table.'.document_date', '<=', $params['end']);
         }
         if(!empty($orders)){
-            //防止参数错传，获取表结构进行验证
-            $tableRows = $this->documentModel->getTableDesc($table);
             foreach ($orders as $c => $o){
                 if($o == 0 && array_key_exists($c, $tableRows))
                     $query->orderBy($table.'.'.$c, 'DESC');
