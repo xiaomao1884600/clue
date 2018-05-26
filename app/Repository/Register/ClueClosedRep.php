@@ -8,20 +8,14 @@
 namespace App\Repository\Register;
 
 use App\Repository\Foundation\BaseRep;
-use App\Model\Clue\Clue;
-use App\Model\Clue\ClueDetail;
+use App\Model\Register\Register;
 use DB;
 
 class ClueClosedRep extends BaseRep
 {
-    public $condition;
-    public function __construct(
-        Clue $clue,
-        ClueDetail $clueDetail
-    )
-    {
-        $this->clue = $clue;
-        $this->clueDetail = $clueDetail;
+
+    public function __construct(Register $register){
+        $this->register = $register;
     }
 
     /**
@@ -31,15 +25,25 @@ class ClueClosedRep extends BaseRep
      * @return array
      */
     public function getClosedList(array $params, $isAll = false){
-        $table = $this->clue->getTableName();
-        $table2 = $this->clueDetail->getTableName();
+        $table = $this->register->getTableName();
+        $tableRows = $this->register->getTableDesc($table);
         $orders = isset($params['order']) ? $params['order'] : [];
-        $query = $this->clue
-            ->select($table.'.number', $table.'.reflected_name', $table.'.company', $table.'.post',
-                $table.'.level', $table2.'.main_content', $table2.'.leader_approval', $table2.'.remark')
-            ->join($table2, $table2.'.clue_id', '=', $table.'.clue_id');
-        if(isset($params['source']) && $params['source']){
-            $query->where($table.'.source', '=', $params['source']);
+        $query = $this->register
+            ->select($table.'.number', $table.'.reflected_name', $table.'.company', $table.'.post', $table.'.clue_next', $table.'.progress', $table.'.source',
+                $table.'.level', $table.'.leader_approval', $table.'.main_content', $table.'.signatory', $table.'.undertake_leader', $table.'.source_dic', $table.'.remark');
+        if(isset($params['clue_next']) && $params['clue_next']){
+            $query->where($table.'.clue_next', '=', $params['clue_next']);
+        }
+        if(isset($params['keywords']) && $params['keywords']){
+
+            $query->where(function($query)use($tableRows, $table, $params){
+                foreach($tableRows as $key => $val){
+                    if(!in_array($key, ['pk_id', 'entry_time', 'closed_time', 'created_at', 'updated_at'])){
+                        $query->orWhere($table.'.'.$key, 'like', "%{$params['keywords']}%");
+                    }
+                }
+            });
+
         }
         if(isset($params['begin']) && $params['begin']){
             $query->where($table.'.entry_time', '>=', $params['begin']);
@@ -49,12 +53,8 @@ class ClueClosedRep extends BaseRep
         }
         if(!empty($orders)){
             foreach ($orders as $c => $o){
-                if($o == 0){
-                    if(in_array($c, ['number', 'reflected_name', 'company', 'post', 'level'])){
-                        $query->orderBy($table.'.'.$c, 'DESC');
-                    }else if(in_array($c, ['main_content', 'leader_approval', 'remark'])){
-                        $query->orderBy($table2.'.'.$c, 'DESC');
-                    }
+                if($o == 0 && array_key_exists($c, $tableRows)){
+                    $query->orderBy($table.'.'.$c, 'DESC');
                 }
             }
         }

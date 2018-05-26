@@ -442,7 +442,7 @@ class ClueService extends BaseService
                 $condition['order'][$val['column']] = (int)$val['order'];
             }
         }
-        $condition['temp'] = ((isset($params['beginDate']) && $params['beginDate']) || (isset($params['beginDate']) && $params['beginDate'])) ? false : true;
+        $condition['temp'] = ((isset($params['beginDate']) && $params['beginDate']) || (isset($params['endDate']) && $params['endDate'])) ? false : true;
         $condition['begin'] = (isset($params['beginDate']) && $params['beginDate']) ? $params['beginDate'] . ' 00:00:00' : '';
         $condition['end'] = (isset($params['endDate']) && $params['endDate']) ? $params['endDate'] . ' 23:59:59' : '';
         $condition['page'] = (isset($params['page']) && $params['page']) ? (int)$params['page'] : 1;

@@ -1104,3 +1104,27 @@ if(! function_exists(''))
         return $date;
     }
 }
+
+if(!function_exists('excelExportSort'))
+{
+    /**
+     * excel数据导出，根据自定义列排序
+     *
+     * @param $data
+     * @param $demo
+     * @param bool $need
+     * @return array
+     */
+    function excelExportSort($data, $demo, $need = false){
+        $res = [];
+        foreach ($data as $key => $val){
+            array_walk($demo, function($q, $k)use(&$res, $key, $val){
+                $res[$key][$k] = $val[$k] ?: '';
+            });
+        }
+        if($need){
+            array_unshift($res, $demo);
+        }
+        return $res;
+    }
+}

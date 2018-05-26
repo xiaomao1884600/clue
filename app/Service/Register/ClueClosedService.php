@@ -20,14 +20,19 @@ use Excel;
 class ClueClosedService extends BaseService
 {
     protected $closedheader = [
-        [
-            'number' => '编号',
-            'reflected_name' => '被反映人',
-            'company' => '工作单位及职务',
-            'main_content' => '反应的主要问题',
-            'leader_approval' => '领导批示',
-            'remark' => '备注'
-        ]
+        'number' => '编号',
+        'reflected_name' => '被反映人',
+        'company' => '工作单位及职务',
+        'level' => '级别',
+        'source' => '线索来源I',
+        'source_dic' => '线索来源II',
+        'clue_next' => '承办单位',
+        'undertake_leader' => '承办领导',
+        'progress' => '进展情况',
+        'leader_approval' => '集体排查意见及领导批示',
+        'main_content' => '主要内容',
+        'signatory' => '领取人签字',
+        'remark' => '备注'
     ];
     
     public function __construct(ClueClosedRep $clueClosedRep)
@@ -60,10 +65,19 @@ class ClueClosedService extends BaseService
                     'number' => $val['number'],
                     'reflected_name' => $val['reflected_name'],
                     'company' => $val['company'] .'—'. $val['post'],
-                    'main_content' => $val['main_content'],
+                    'clue_next' => $val['clue_next'],
+                    'progress' => $val['progress'],
+                    'source' => $val['source'],
+                    'source_dic' => $val['source_dic'],
+                    'level' => $val['level'],
                     'leader_approval' => $val['leader_approval'],
-                    'remark' => $val['remark']
+                    'main_content' => $val['main_content'],
+                    'signatory' => $val['signatory'],
+                    'undertake_leader' => $val['undertake_leader'],
+                    'remark' => $val['remark'],
                 ];
+
+
             }
             $this->closedClueExport($data);
         }
@@ -80,9 +94,9 @@ class ClueClosedService extends BaseService
     {
         $beginDateline =  $params['beginDate'] ? strtotime($params['beginDate'] . ' 00:00:00') : 0;
         $endDateline =  $params['endDate'] ? strtotime($params['endDate'] . '23:59:59') : 0;
-        if($endDateline && $beginDateline > $endDateline){
-            throw new \Exception("开始日期不能晚于结束日期");
-        }
+//        if($endDateline && $beginDateline > $endDateline){
+//            throw new \Exception("开始日期不能晚于结束日期");
+//        }
     }
 
     /**
@@ -99,9 +113,10 @@ class ClueClosedService extends BaseService
                 $condition['order'][$val['column']] = (int)$val['order'];
             }
         }
-        $condition['source'] = $params['source'];
+        $condition['clue_next'] = $params['clue_next'] ?? '';
         $condition['begin'] = $params['beginDate'] ? $params['beginDate'] . ' 00:00:00' : 0;
         $condition['end'] = $params['endDate'] ? $params['endDate'] . ' 23:59:59' : 0;
+        $condition['keywords'] = $params['keywords'] ?? '';
         $condition['page'] = (isset($params['page']) && $params['page']) ? (int)$params['page'] : 1;
         $condition['pagesize'] = (isset($params['pagesize']) && $params['pagesize']) ? (int)$params['pagesize'] : 10;
         return $condition;
@@ -114,7 +129,10 @@ class ClueClosedService extends BaseService
      */
     public function closedClueExport(array $cellData)
     {
-        $cellData = array_merge_recursive($this->closedheader, $cellData);
+//        debuger($this->closedheader);
+//        x($cellData);
+        $cellData = excelExportSort($cellData, $this->closedheader, true);
+//        $cellData = array_merge_recursive($this->closedheader, $cellData);
         Excel::create('已结案线索',function($excel) use ($cellData){
             $excel->sheet('score', function($sheet) use ($cellData){
                 $sheet->rows($cellData);
