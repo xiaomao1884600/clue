@@ -48,8 +48,6 @@ class ClueClosedService extends BaseService
      * @return array
      */
     public function getClosedListService(array $params){
-        //检查查询日期是否正确
-        $this->checkSearchDate($params);
         //拼装最终搜索条件
         $condition = $this->processSearchCondition($params);
         $isAll = false;
@@ -79,24 +77,10 @@ class ClueClosedService extends BaseService
 
 
             }
-            $this->closedClueExport($data);
+            $fields = $params['fields'] ?? [];//选中字段
+            $this->closedClueExport($data, $fields);
         }
         return $res;
-    }
-
-    /**
-     * 校验搜索日期
-     *
-     * @param array $params
-     * @throws \Exception
-     */
-    public function checkSearchDate(array $params)
-    {
-        $beginDateline =  $params['beginDate'] ? strtotime($params['beginDate'] . ' 00:00:00') : 0;
-        $endDateline =  $params['endDate'] ? strtotime($params['endDate'] . '23:59:59') : 0;
-//        if($endDateline && $beginDateline > $endDateline){
-//            throw new \Exception("开始日期不能晚于结束日期");
-//        }
     }
 
     /**
@@ -108,14 +92,14 @@ class ClueClosedService extends BaseService
     public function processSearchCondition(array $params)
     {
         $condition = [];
-        if(is_array($params['orders']) && !empty($params['orders'])){
+        if(isset($params['orders']) && is_array($params['orders']) && !empty($params['orders'])){
             foreach($params['orders'] as $val){
                 $condition['order'][$val['column']] = (int)$val['order'];
             }
         }
         $condition['clue_next'] = $params['clue_next'] ?? '';
-        $condition['begin'] = $params['beginDate'] ? $params['beginDate'] . ' 00:00:00' : 0;
-        $condition['end'] = $params['endDate'] ? $params['endDate'] . ' 23:59:59' : 0;
+        $condition['begin'] = isset($params['beginDate']) && $params['beginDate'] ? $params['beginDate'] . ' 00:00:00' : 0;
+        $condition['end'] = isset($params['endDate']) && $params['endDate'] ? $params['endDate'] . ' 23:59:59' : 0;
         $condition['keywords'] = $params['keywords'] ?? '';
         $condition['page'] = (isset($params['page']) && $params['page']) ? (int)$params['page'] : 1;
         $condition['pagesize'] = (isset($params['pagesize']) && $params['pagesize']) ? (int)$params['pagesize'] : 10;
@@ -127,12 +111,18 @@ class ClueClosedService extends BaseService
      * 
      * @param array $cellData
      */
-    public function closedClueExport(array $cellData)
+    public function closedClueExport(array $cellData, $fields = [])
     {
-//        debuger($this->closedheader);
-//        x($cellData);
         $cellData = excelExportSort($cellData, $this->closedheader, true);
-//        $cellData = array_merge_recursive($this->closedheader, $cellData);
+        if(!empty($fields)){
+            foreach($cellData as $k => &$v){
+                foreach($v as $k2 => $v2){
+                    if(!in_array($k2, $fields)){
+                        unset($v[$k2]);
+                    }
+                }
+            }
+        }
         Excel::create('已结案线索',function($excel) use ($cellData){
             $excel->sheet('score', function($sheet) use ($cellData){
                 $sheet->rows($cellData);
