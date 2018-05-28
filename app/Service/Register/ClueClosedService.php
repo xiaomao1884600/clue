@@ -60,6 +60,7 @@ class ClueClosedService extends BaseService
             $data = [];
             foreach($res['data'] as $val){
                 $data[] = [
+                    'clue_id' => $val['clue_id'],
                     'number' => $val['number'],
                     'reflected_name' => $val['reflected_name'],
                     'company' => $val['company'] .'—'. $val['post'],

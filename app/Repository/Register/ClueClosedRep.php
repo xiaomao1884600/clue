@@ -29,7 +29,7 @@ class ClueClosedRep extends BaseRep
         $tableRows = $this->register->getTableDesc($table);
         $orders = isset($params['order']) ? $params['order'] : [];
         $query = $this->register
-            ->select($table.'.number', $table.'.reflected_name', $table.'.company', $table.'.post', $table.'.clue_next', $table.'.progress', $table.'.source',
+            ->select($table.'.clue_id', $table.'.number', $table.'.reflected_name', $table.'.company', $table.'.post', $table.'.clue_next', $table.'.progress', $table.'.source',
                 $table.'.level', $table.'.leader_approval', $table.'.main_content', $table.'.signatory', $table.'.undertake_leader', $table.'.source_dic', $table.'.remark');
         if(isset($params['clue_next']) && $params['clue_next']){
             $query->where($table.'.clue_next', '=', $params['clue_next']);
