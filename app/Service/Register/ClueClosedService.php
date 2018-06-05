@@ -101,7 +101,7 @@ class ClueClosedService extends BaseService
         $condition['clue_next'] = $params['clue_next'] ?? '';
         $condition['begin'] = isset($params['beginDate']) && $params['beginDate'] ? $params['beginDate'] . ' 00:00:00' : 0;
         $condition['end'] = isset($params['endDate']) && $params['endDate'] ? $params['endDate'] . ' 23:59:59' : 0;
-        $condition['keywords'] = $params['keywords'] ?? '';
+        $condition['keywords'] = $params['keyword'] ?? '';
         $condition['page'] = (isset($params['page']) && $params['page']) ? (int)$params['page'] : 1;
         $condition['pagesize'] = (isset($params['pagesize']) && $params['pagesize']) ? (int)$params['pagesize'] : 10;
         return $condition;
