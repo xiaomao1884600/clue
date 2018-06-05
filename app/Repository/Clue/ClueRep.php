@@ -359,6 +359,6 @@ class ClueRep extends BaseRep
             ".((isset($params['end']) && $params['end']) ? "AND c.closed_time <= '{$params['end']}'" : '')."
             ".(($params['temp'] === true) ? "AND a.days >= 0" : '')."
         ");
-        return $res[0] ? $res[0]->total : 0;
+        return $res[0] ? ['total' => $res[0]->total] : ['total' => 0];
     }
 }
