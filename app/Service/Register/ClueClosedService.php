@@ -78,7 +78,7 @@ class ClueClosedService extends BaseService
 
 
             }
-            $fields = $params['fields'] ?? [];//选中字段
+            $fields = isset($params['fields']) && $params['fields'] ? explode(",",$params['fields']) : [];//选中字段
             $this->closedClueExport($data, $fields);
         }
         return $res;
@@ -114,16 +114,14 @@ class ClueClosedService extends BaseService
      */
     public function closedClueExport(array $cellData, $fields = [])
     {
-        $cellData = excelExportSort($cellData, $this->closedheader, true);
         if(!empty($fields)){
             foreach($cellData as $k => &$v){
-                foreach($v as $k2 => $v2){
-                    if(!in_array($k2, $fields)){
-                        unset($v[$k2]);
-                    }
+                if(!in_array($v['clue_id'], $fields)){
+                    unset($cellData[$k]);
                 }
             }
         }
+        $cellData = excelExportSort($cellData, $this->closedheader, true);
         Excel::create('已结案线索',function($excel) use ($cellData){
             $excel->sheet('score', function($sheet) use ($cellData){
                 $sheet->rows($cellData);
