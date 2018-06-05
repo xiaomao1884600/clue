@@ -238,6 +238,8 @@ class ClueRep extends BaseRep
             foreach ($orders as $c => $o){
                 if($o == 0 && array_key_exists($c, $tableRows))
                     $order .= 'c.' . $c . ' DESC,';
+                if($c == 'news')
+                    $order .= $c . ' DESC,';
             }
             $order = rtrim($order, ',');
         }
@@ -255,7 +257,7 @@ class ClueRep extends BaseRep
             ".($order ? " ORDER BY ".$order : '')."
             LIMIT ".($params['page'] - 1) * $params['pagesize'].", ".$params['pagesize']."
         ");
-        return array_map('get_object_vars', $res);
+        return object_array($res);
     }
 
     /**

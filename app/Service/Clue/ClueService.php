@@ -542,6 +542,6 @@ class ClueService extends BaseService
      */
     public function remindTotal(array $params)
     {
-        return $this->clueRep->getRemindTotal([]);
+        return $this->clueRep->getRemindTotal(['temp'=>true]);
     }
 }
