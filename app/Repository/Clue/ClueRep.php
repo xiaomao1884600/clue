@@ -253,6 +253,7 @@ class ClueRep extends BaseRep
             WHERE c.clue_state <> 1
             ".((isset($params['begin']) && $params['begin']) ? "AND c.closed_time >= '{$params['begin']}'" : '')."
             ".((isset($params['end']) && $params['end']) ? "AND c.closed_time <= '{$params['end']}'" : '')."
+            ".($params['source'] ? "AND (c.source like '%{$params['source']}%' OR c.source_dic like '%{$params['source']}%')" : '')."
             ".(($params['temp'] === true) ? "AND a.days >= 0" : '')."
             ".($order ? " ORDER BY ".$order : '')."
             LIMIT ".($params['page'] - 1) * $params['pagesize'].", ".$params['pagesize']."
@@ -359,6 +360,7 @@ class ClueRep extends BaseRep
             WHERE c.clue_state <> 1
             ".((isset($params['begin']) && $params['begin']) ? "AND c.closed_time >= '{$params['begin']}'" : '')."
             ".((isset($params['end']) && $params['end']) ? "AND c.closed_time <= '{$params['end']}'" : '')."
+            ".($params['source'] ? "AND (c.source like '%{$params['source']}%' OR c.source_dic like '%{$params['source']}%')" : '')."
             ".(($params['temp'] === true) ? "AND a.days >= 0" : '')."
         ");
         return $res[0] ? ['total' => $res[0]->total] : ['total' => 0];

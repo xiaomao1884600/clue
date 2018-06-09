@@ -445,6 +445,9 @@ class ClueService extends BaseService
         $condition['temp'] = ((isset($params['beginDate']) && $params['beginDate']) || (isset($params['endDate']) && $params['endDate'])) ? false : true;
         $condition['begin'] = (isset($params['beginDate']) && $params['beginDate']) ? $params['beginDate'] . ' 00:00:00' : '';
         $condition['end'] = (isset($params['endDate']) && $params['endDate']) ? $params['endDate'] . ' 23:59:59' : '';
+        //线索来源
+        $condition['source'] = $params['source'] ?? '';
+        
         $condition['page'] = (isset($params['page']) && $params['page']) ? (int)$params['page'] : 1;
         $condition['pagesize'] = (isset($params['pagesize']) && $params['pagesize']) ? (int)$params['pagesize'] : 10;
         return $condition;
