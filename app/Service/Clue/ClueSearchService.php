@@ -284,7 +284,9 @@ class ClueSearchService extends BaseService
 
         // 线索来源
         if (_isset($params, 'source')) {
-            $conditon['where'][] = ['field' => 'source', 'operator' => 'like', 'value' => "%" . _isset($params, 'source') . "%"];
+            //$conditon['where'][] = ['field' => 'source', 'operator' => 'like', 'value' => "%" . _isset($params, 'source') . "%"];
+            $conditon['orWhere']['source_dic'] = _isset($params, 'source');
+            $conditon['orWhere']['source'] = _isset($params, 'source');
         }
 
         // 单位
