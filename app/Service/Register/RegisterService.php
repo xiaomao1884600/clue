@@ -51,47 +51,47 @@ class RegisterService extends BaseService
 
     protected $testClueInfo = [
         'register' => [
-            'source_dic' => '线索来源字典', // 线索来源I
-            'source' => '线索来源输入框', // 线索来源II
+            //'source_dic' => '线索来源字典', // 线索来源I
+            //'source' => '线索来源输入框', // 线索来源II
             'number' => TIMENOW, // 编号
             'reflected_name' => 'zhangsan', // 被反映人
-            'company' => '天宇国际', // 单位
-            'post' => '经理',  // 职位
-            'level' => '处级',  // 级别
-            'entry_time' => '2018-03-17 10:00:00',  // 录入日期
-            'closed_time' => '2018-05-20 10:00:00', // 结案日期
-            'disposal_type' => '集体排查', // 处置类型
-            'supervisor' => '上级交办', // 是否上级交办
-            'remind_days' => 8, // 提醒天数
+            'company' => '天宇国际', // 工作单位及职务
+            //'post' => '经理',  // 职位
+            //'level' => '处级',  // 级别
+            //'entry_time' => '2018-03-17 10:00:00',  // 录入日期
+            //'closed_time' => '2018-05-20 10:00:00', // 结案日期
+            //'disposal_type' => '集体排查', // 处置类型
+            //'supervisor' => '上级交办', // 是否上级交办
+            //'remind_days' => 8, // 提醒天数
             'clue_next' => '干部监督室', // 承办部门
-            'clue_state' => '待办', // 线索状态
-            'main_content' => '主要内容',
-            'department_opinion' => '部门意见',
+            //'clue_state' => '待办', // 线索状态
+            'main_content' => '反应的主要问题',
+            //'department_opinion' => '部门意见',
             'leader_approval' => '集体排查意见及领导批示',
             'signatory' => '领取人签字',
             'undertake_leader' => '承办领导',
-            'progress' => '进展情况',
+            'progress' => '进展',
             'remark' => '备注',
         ],
-        'register_attachments' => [
-            [
-                'file_id' => '1', //附件id
-                'originalName' => '测试.doc', // 附件原始名称
-                'newFileName' => '测试_20180318.doc', // 文件名称
-                'extension' => 'doc',  // 后缀
-                'file_path' => 'uploads/aaa.doc', // 文件路径
-                'attachment_type' => 'wrod', // 附件类型
-            ],
-
-            [
-                'file_id' => '2',
-                'originalName' => '测试2.png',
-                'newFileName' => '测试2_20180318.png',
-                'extension' => 'doc',
-                'file_path' => 'uploads/aaa.png',
-                'attachment_type' => 'img', // 附件类型(图片)
-            ]
-        ],
+//        'register_attachments' => [
+//            [
+//                'file_id' => '1', //附件id
+//                'originalName' => '测试.doc', // 附件原始名称
+//                'newFileName' => '测试_20180318.doc', // 文件名称
+//                'extension' => 'doc',  // 后缀
+//                'file_path' => 'uploads/aaa.doc', // 文件路径
+//                'attachment_type' => 'wrod', // 附件类型
+//            ],
+//
+//            [
+//                'file_id' => '2',
+//                'originalName' => '测试2.png',
+//                'newFileName' => '测试2_20180318.png',
+//                'extension' => 'doc',
+//                'file_path' => 'uploads/aaa.png',
+//                'attachment_type' => 'img', // 附件类型(图片)
+//            ]
+//        ],
     ];
 
     /**
@@ -141,7 +141,7 @@ class RegisterService extends BaseService
         $clueId = $this->processSaveRegister($params['register']);
 
         // 处理线索附件存储
-        $this->processSaveClueAttachments($params['register_attachments'], $clueId);
+        //$this->processSaveClueAttachments($params['register_attachments'], $clueId);
 
         return ['clue_id' => $clueId];
     }
