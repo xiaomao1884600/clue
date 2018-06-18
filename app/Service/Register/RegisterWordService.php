@@ -40,6 +40,7 @@ class RegisterWordService extends BaseService
     public function setRegisterExportWord(array $params)
     {
         $clueData = [];
+
         // 获取线索数据
         $clueData = $this->getRegisterData($params);
         if(! $clueData){
@@ -61,10 +62,13 @@ class RegisterWordService extends BaseService
 
         $condition = ['clue_id' => $clueId];
         $clueData = $this->registerRep->getRegisterByClueId($condition);
+        if(! $clueData) return [];
 
         // TODO 处理
         $clueData['entry_date'] = dateFormat(strtotime($clueData['entry_time']), 'Y 年 m 月 d 日');
-
+        $sourceDic = $clueData['source_dic'] ?? '';
+        $source = $sourceDic ? $sourceDic . ' - ' . $clueData['source'] : $clueData['source'];
+        $clueData['source'] = $source;
         return $clueData;
     }
 }
