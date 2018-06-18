@@ -70,7 +70,9 @@ class ClueWordService extends BaseService
     {
         // TODO 处理
         $data['entry_date'] = dateFormat(strtotime($data['entry_time']), 'Y 年 m 月 d 日');
-
+        $sourceDic = $data['source_dic'] ?? '';
+        $source = $sourceDic ? $sourceDic . ' - ' . $data['source'] : $data['source'];
+        $data['source'] = $source;
         return $data;
     }
 
