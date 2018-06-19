@@ -82,7 +82,7 @@ class DocumentUploadService extends BaseService
         $this->documentRep->saveDocument($excelData);
 
         $result = [
-            'type' => 't_register',
+            'type' => 't_document',
             'successData' => ['total' => count($excelData)],
             'failedData' => ['total' => count($failedData) ,'data' => $failedData],
         ];
