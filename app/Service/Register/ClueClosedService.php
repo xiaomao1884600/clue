@@ -121,11 +121,24 @@ class ClueClosedService extends BaseService
                 }
             }
         }
-        $cellData = excelExportSort($cellData, $this->closedheader, true);
-        Excel::create('已结案线索',function($excel) use ($cellData){
-            $excel->sheet('score', function($sheet) use ($cellData){
-                $sheet->rows($cellData);
-            });
-        })->export('xls');
+        $cellData = excelExportSort($cellData, $this->closedheader);
+
+        Excel::create('已结案线索', function ($excel) use ($cellData) {
+            $i = 0;
+            foreach($cellData as $k => $val){
+                $i ++;
+                $excel->sheet($val['clue_next'] . $i, function ($sheet) use ($val) {
+                    $sheet->setHeight(array(
+                        1 => 25,
+                        2 => 25,
+                        3 => 45
+                    ));
+                    $sheet->row(1, ['承办领导：' . $val['undertake_leader'], '', '', '承办部门：' . $val['clue_next']])->mergeCells('A1:C1')->setWidth(['A' => '12', 'B' => '16', 'C' => '15.5', 'D' => '19', 'E' => '24', 'F' => '11.5', 'G' => '12.5', 'H' => '16']);
+                    $sheet->row(2, ['编号', '被反映人', '工作单位及职务', '反映的主要问题', '集体排查意见及领导批示', '领取人签字', '备注', '进展']);
+                    $sheet->row(3, [$val['number'], $val['reflected_name'], $val['company'], $val['main_content'], $val['leader_approval'], $val['signatory'], $val['remark'], $val['progress']]);
+                });
+            }
+        })->export('xlsx');
+
     }
 }
