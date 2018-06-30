@@ -122,20 +122,31 @@ class ClueClosedService extends BaseService
             }
         }
         $cellData = excelExportSort($cellData, $this->closedheader);
+        $excelData = [];
+        array_walk($cellData, function($q)use(&$excelData){
+            $excelData[$q['clue_next']][] = $q;
+        });
+        Excel::create('已结案线索', function ($excel) use ($excelData) {
+            $auto_increment = [];
+            foreach($excelData as $k => $v){
+                $excel->sheet($k, function ($sheet) use ($v, $k, &$auto_increment) {
+                    foreach($v as $key=>$val){
 
-        Excel::create('已结案线索', function ($excel) use ($cellData) {
-            $i = 0;
-            foreach($cellData as $k => $val){
-                $i ++;
-                $excel->sheet($val['clue_next'] . $i, function ($sheet) use ($val) {
-                    $sheet->setHeight(array(
-                        1 => 25,
-                        2 => 25,
-                        3 => 45
-                    ));
-                    $sheet->row(1, ['承办领导：' . $val['undertake_leader'], '', '', '承办部门：' . $val['clue_next']])->mergeCells('A1:C1')->setWidth(['A' => '12', 'B' => '16', 'C' => '15.5', 'D' => '19', 'E' => '24', 'F' => '11.5', 'G' => '12.5', 'H' => '16']);
-                    $sheet->row(2, ['编号', '被反映人', '工作单位及职务', '反映的主要问题', '集体排查意见及领导批示', '领取人签字', '备注', '进展']);
-                    $sheet->row(3, [$val['number'], $val['reflected_name'], $val['company'], $val['main_content'], $val['leader_approval'], $val['signatory'], $val['remark'], $val['progress']]);
+                        if(isset($auto_increment[$k])){
+                            $auto_increment[$k] ++;
+                        }else{
+                            $auto_increment[$k] = 0;
+                        }
+                        $currentNum = $auto_increment[$k] * 4;
+                        $sheet->setHeight(array(
+                            ($currentNum + 1) => 25,
+                            ($currentNum + 2) => 25,
+                            ($currentNum + 3) => 45
+                        ));
+                        $sheet->row(($currentNum + 1), ['承办领导：' . $val['undertake_leader'], '', '', '承办部门：' . $val['clue_next']])->mergeCells('A'.($currentNum + 1).':C'.($currentNum + 1))->setWidth(['A' => '12', 'B' => '16', 'C' => '15.5', 'D' => '19', 'E' => '24', 'F' => '11.5', 'G' => '12.5', 'H' => '16']);
+                        $sheet->row(($currentNum + 2), ['编号', '被反映人', '工作单位及职务', '反映的主要问题', '集体排查意见及领导批示', '领取人签字', '备注', '进展']);
+                        $sheet->row(($currentNum + 3), [$val['number'], $val['reflected_name'], $val['company'], $val['main_content'], $val['leader_approval'], $val['signatory'], $val['remark'], $val['progress']]);
+                    }
                 });
             }
         })->export('xlsx');
