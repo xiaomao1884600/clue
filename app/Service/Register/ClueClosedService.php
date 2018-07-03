@@ -135,7 +135,7 @@ class ClueClosedService extends BaseService
         });
         Excel::create('已结案线索', function ($excel) use ($excelData) {
             foreach($excelData as $k => $v){
-                $sheetName = substr($k, 0, strpos($k, '/'));
+                $sheetName = substr($k, 0, strpos($k, '_'));
                 $sheetName = $sheetName ? $sheetName : 'sheet';
                 $excel->sheet($sheetName, function ($sheet) use ($v, $k, &$auto_increment) {
                     $sheet->row(1, ['承办领导：' . $v['undertake_leader'], '', '', '承办部门：' . $v['clue_next']])->mergeCells('A1:C1')->setWidth(['A' => '12', 'B' => '16', 'C' => '15.5', 'D' => '19', 'E' => '24', 'F' => '11.5', 'G' => '12.5', 'H' => '16']);
