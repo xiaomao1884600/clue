@@ -63,7 +63,7 @@ class ClueClosedService extends BaseService
                     'clue_id' => $val['clue_id'],
                     'number' => $val['number'],
                     'reflected_name' => $val['reflected_name'],
-                    'company' => $val['company'] .'—'. $val['post'],
+                    'company' => $val['company'],
                     'clue_next' => $val['clue_next'],
                     'progress' => $val['progress'],
                     'source' => $val['source'],
