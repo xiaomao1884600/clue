@@ -59,10 +59,10 @@ class DocumentRep extends BaseRep
 
         }
         if(isset($params['begin']) && $params['begin']){
-            $query->where($table.'.document_date', '>=', $params['begin']);
+            $query->where($table.'.created_at', '>=', $params['begin']);
         }
         if(isset($params['end']) && $params['end']){
-            $query->where($table.'.document_date', '<=', $params['end']);
+            $query->where($table.'.created_at', '<=', $params['end']);
         }
         if(!empty($orders)){
             foreach ($orders as $c => $o){

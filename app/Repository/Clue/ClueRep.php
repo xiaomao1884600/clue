@@ -251,8 +251,8 @@ class ClueRep extends BaseRep
             ) a
             INNER JOIN t_clue AS c ON c.pk_id = a.pk_id AND a.days <= c.remind_days
             WHERE c.clue_state <> 1
-            ".((isset($params['begin']) && $params['begin']) ? "AND c.closed_time >= '{$params['begin']}'" : '')."
-            ".((isset($params['end']) && $params['end']) ? "AND c.closed_time <= '{$params['end']}'" : '')."
+            ".((isset($params['begin']) && $params['begin']) ? "AND c.created_at >= '{$params['begin']}'" : '')."
+            ".((isset($params['end']) && $params['end']) ? "AND c.created_at <= '{$params['end']}'" : '')."
             ".($params['source'] ? "AND (c.source like '%{$params['source']}%' OR c.source_dic like '%{$params['source']}%')" : '')."
             ".(($params['temp'] === true) ? "AND a.days >= 0" : '')."
             ".($order ? " ORDER BY ".$order : '')."
@@ -358,8 +358,8 @@ class ClueRep extends BaseRep
             ) a
             INNER JOIN t_clue AS c ON c.pk_id = a.pk_id AND a.days <= c.remind_days
             WHERE c.clue_state <> 1
-            ".((isset($params['begin']) && $params['begin']) ? "AND c.closed_time >= '{$params['begin']}'" : '')."
-            ".((isset($params['end']) && $params['end']) ? "AND c.closed_time <= '{$params['end']}'" : '')."
+            ".((isset($params['begin']) && $params['begin']) ? "AND c.created_at >= '{$params['begin']}'" : '')."
+            ".((isset($params['end']) && $params['end']) ? "AND c.created_at <= '{$params['end']}'" : '')."
             ".($params['source'] ? "AND (c.source like '%{$params['source']}%' OR c.source_dic like '%{$params['source']}%')" : '')."
             ".(($params['temp'] === true) ? "AND a.days >= 0" : '')."
         ");
